@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun GoApp(){
     val navController = rememberNavController()

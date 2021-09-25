@@ -43,7 +43,7 @@ import br.com.correios.android.ppm.myinvest.R
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.google.android.material.datepicker.MaterialDatePicker
 
-@Preview
+
 @Composable
 fun ScreenAddAtivo(navController: NavController) {
 

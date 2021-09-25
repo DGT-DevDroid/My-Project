@@ -35,6 +35,8 @@ fun ScreenMain(navController: NavController) {
 //    Button(onClick = { navController.navigate("screen_add_ativo") }) {
 //        Text(text = "Tela Adicionar Ativo")
 //    }
+
+
     Box(
         modifier = Modifier
             .background(DeepBlue)
