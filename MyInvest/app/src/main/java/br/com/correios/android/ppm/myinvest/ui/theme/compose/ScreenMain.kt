@@ -8,6 +8,10 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.SnackbarDefaults.backgroundColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,15 +39,13 @@ fun ScreenMain(navController: NavController) {
 //    Button(onClick = { navController.navigate("screen_add_ativo") }) {
 //        Text(text = "Tela Adicionar Ativo")
 //    }
-
-
     Box(
         modifier = Modifier
             .background(DeepBlue)
             .fillMaxSize()
     ) {
         Column {
-
+            TopAppBarCompose()
             GreetingSection()
             ChipSection(chips = listOf("Dashboard", "Cotação", "Operações"))
             CurrentMeditation(navController)
@@ -321,7 +323,7 @@ fun GreetingSection(
         ) {
             Text(
                 text = "My Invest",
-                style = MaterialTheme.typography.h2,
+                style = MaterialTheme.typography.h5,
                 color = White
 
             )
@@ -331,13 +333,6 @@ fun GreetingSection(
                 color = White
             )
         }
-
-        Icon(
-            painter = painterResource(id = R.drawable.ic_profile),
-            contentDescription = "Search",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
     }
 }
 
@@ -534,4 +529,37 @@ fun FeatureItem(
             )
         }
     }
+}
+@Composable
+fun TopAppBarCompose(){
+    TopAppBar(
+
+        title =  {
+            Text(
+                text ="My Invest",
+                fontSize = 20.sp,
+
+                )},
+        navigationIcon = {
+            IconButton(onClick = {
+
+            }) {
+                Icon(Icons.Default.Menu, "Menu")
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                //.navigate("screen_main")
+            }) {
+                //Icon(Icons.Default.ArrowBack, "Back")
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_profile),
+                    contentDescription = "Search",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        },
+
+        )
 }

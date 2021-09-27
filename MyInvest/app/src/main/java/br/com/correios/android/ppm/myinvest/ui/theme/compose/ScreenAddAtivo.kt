@@ -1,6 +1,8 @@
 package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
 import android.annotation.SuppressLint
+import android.icu.text.DecimalFormat
+import android.icu.text.FormattedValue
 import android.provider.ContactsContract
 import android.widget.CalendarView
 import android.widget.DatePicker
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
@@ -42,11 +45,13 @@ import androidx.navigation.NavController
 import br.com.correios.android.ppm.myinvest.R
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.NumberFormat
 
-
+//@Preview
+@SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ScreenAddAtivo(navController: NavController) {
-
+    //val navController = navController
     val nameValue = remember { mutableStateOf("") }
     val valorValue = remember { mutableStateOf("") }
     val qtdValue = remember { mutableStateOf("") }
@@ -58,26 +63,29 @@ fun ScreenAddAtivo(navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
+
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White),
             contentAlignment = Alignment.TopCenter
         ) {
             //Image(image)
+
         }
 
 
         Column(
+
             modifier = Modifier
                 .fillMaxWidth()
                 //.fillMaxHeight(0.70f)
                 //.clip(RoundedCornerShape(topLeft = 30.dp, topRight = 30.dp))
-                .background(DeepBlue)
-                .padding(10.dp),
+                .background(DeepBlue),
+            //.padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
+            TopAppBarCompose(navController)
             Spacer(modifier = Modifier.padding(20.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
@@ -105,8 +113,8 @@ fun ScreenAddAtivo(navController: NavController) {
 
                 Column(
                     modifier = Modifier
-                       .fillMaxWidth(),
-                       horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Column {
@@ -224,21 +232,36 @@ fun ScreenAddAtivo(navController: NavController) {
                                 textStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold),
                                 //placeholder = { Text(text = "Corretora: ") },
                                 singleLine = true,
-                                modifier = Modifier.fillMaxWidth(0.8f).clip(RoundedCornerShape(13.dp)),
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .clip(RoundedCornerShape(13.dp)),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
-
+                            TextField(
+                                value = valorValue.value,
+                                onValueChange = { valorValue.value = it },
+                                label = { Text(text = "Preço (R$): ",color = Color.White) },
+                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                //placeholder = { Text(text = "Corretora: ") },
+                                singleLine = true,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .clip(RoundedCornerShape(13.dp)),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
                             TextField(
                                 value = qtdValue.value,
                                 onValueChange = { qtdValue.value = it },
                                 textStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold),
                                 label = { Text(
-                                    text = "Quantidade",
+                                    text = "Quantidade:",
                                     color = Color.White,
                                 ) },
                                 //placeholder = { Text(text = "Quantidade") },
                                 singleLine = true,
-                                modifier = Modifier.fillMaxWidth(0.8f).clip(RoundedCornerShape(13.dp)),
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .clip(RoundedCornerShape(13.dp)),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
 
@@ -258,4 +281,19 @@ fun ScreenAddAtivo(navController: NavController) {
             }
         }
     }
+}
+
+@Composable
+fun TopAppBarCompose(navController:NavController){
+    TopAppBar(
+        title =  { Text(text ="My Invest", fontSize = 20.sp)},
+        navigationIcon = {
+            IconButton(onClick = {
+                navController.navigate("screen_main")
+            }) {
+                Icon(Icons.Default.ArrowBack, "Back")
+            }
+        },
+        actions = {}
+    )
 }
