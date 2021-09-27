@@ -1,9 +1,11 @@
 package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
 import android.annotation.SuppressLint
+import android.icu.number.FormattedNumber
 import android.icu.text.DecimalFormat
 import android.icu.text.FormattedValue
 import android.provider.ContactsContract
+import android.text.format.Formatter
 import android.widget.CalendarView
 import android.widget.DatePicker
 import androidx.annotation.RequiresPermission
@@ -45,7 +47,9 @@ import androidx.navigation.NavController
 import br.com.correios.android.ppm.myinvest.R
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.Format
 import java.text.NumberFormat
+import java.util.*
 
 //@Preview
 @SuppressLint("UnusedTransitionTargetStateParameter")
@@ -54,10 +58,10 @@ fun ScreenAddAtivo(navController: NavController) {
     //val navController = navController
     val nameValue = remember { mutableStateOf("") }
     val valorValue = remember { mutableStateOf("") }
+    val precoValue = remember { mutableStateOf("") }
     val qtdValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
     val confirmPasswordValue = remember { mutableStateOf("") }
-
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
 
@@ -66,13 +70,12 @@ fun ScreenAddAtivo(navController: NavController) {
 
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White),
+                .background(DeepBlue),
             contentAlignment = Alignment.TopCenter
         ) {
             //Image(image)
 
         }
-
 
         Column(
 
@@ -80,7 +83,7 @@ fun ScreenAddAtivo(navController: NavController) {
                 .fillMaxWidth()
                 //.fillMaxHeight(0.70f)
                 //.clip(RoundedCornerShape(topLeft = 30.dp, topRight = 30.dp))
-                .background(DeepBlue),
+                .background(DeepBlue2),
             //.padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -92,9 +95,9 @@ fun ScreenAddAtivo(navController: NavController) {
                     text = "Adicionar Ativo", fontSize = 30.sp, color = Color.White,  style = MaterialTheme.typography.h6
                 )
 
-                val ativoList = mutableListOf("PETR4", "ITUB4", "ITSA4", "GOGN3", "VALE3")
+                val ativoList = mutableListOf("","ALPA4","ABEV3","AMER3","ASAI3","AZUL4","B3SA3","BIDI4","BIDI11","BPAN4","BBSE3","BRML3","BBDC3","BBDC4","BRAP4","BBAS3","BRKM5","BRFS3","BPAC11","CRFB3","CCRO3","CMIG4","CIEL3","COGN3","CPLE6","CSAN3","CPFE3","CVCB3","CYRE3","DXCO3","ECOR3","ELET3","ELET6","EMBR3","ENBR3","ENGI11","ENEV3","EGIE3","EQTL3","EZTC3","FLRY3","GGBR4","GOAU4","GOLL4","NTCO3","SOMA3","HAPV3","HYPE3","IGTA3","GNDI3","IRBR3","ITSA4","ITUB4","JBSS3","JHSF3","KLBN11","RENT3","LCAM3","LWSA3","LAME4","LREN3","MGLU3","MRFG3","CASH3","BEEF3","MRVE3","MULT3","PCAR3","PETR3","PETR4","BRDT3","PRIO3","PETZ3","QUAL3","RADL3","RDOR3","RAIL3","SBSP3","SANB11","CSNA3","SULA11","SUZB3","TAEE11","VIVT3","TIMS3","TOTS3","UGPA3","USIM5","VALE3","VIIA3","WEGE3","YDUQ3")
                 var ativoName: String by remember { mutableStateOf(ativoList[0]) }
-                val corretoraList = mutableListOf("CLEAR", "MODAL", "XP", "TORO")
+                val corretoraList = mutableListOf("    ","CLEAR", "MODAL", "XP", "TORO")
                 var corretoraName: String by remember { mutableStateOf(corretoraList[0]) }
                 var expandedAtivo by remember { mutableStateOf(false) }
                 val transitionStateAtivo = remember {
@@ -229,7 +232,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                 value = valorValue.value,
                                 onValueChange = { valorValue.value = it },
                                 label = { Text(text = "Valor (R$): ",color = Color.White) },
-                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
                                 //placeholder = { Text(text = "Corretora: ") },
                                 singleLine = true,
                                 modifier = Modifier
@@ -237,11 +240,12 @@ fun ScreenAddAtivo(navController: NavController) {
                                     .clip(RoundedCornerShape(13.dp)),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
+
                             TextField(
-                                value = valorValue.value,
-                                onValueChange = { valorValue.value = it },
+                                value = precoValue.value,
+                                onValueChange = { precoValue.value = it },
                                 label = { Text(text = "Preço (R$): ",color = Color.White) },
-                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
                                 //placeholder = { Text(text = "Corretora: ") },
                                 singleLine = true,
                                 modifier = Modifier
@@ -252,7 +256,7 @@ fun ScreenAddAtivo(navController: NavController) {
                             TextField(
                                 value = qtdValue.value,
                                 onValueChange = { qtdValue.value = it },
-                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
                                 label = { Text(
                                     text = "Quantidade:",
                                     color = Color.White,
@@ -270,6 +274,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                 onClick = { }, modifier = Modifier
                                     .fillMaxWidth(0.8f)
                                     .height(50.dp)
+                                    .clip(RoundedCornerShape(13.dp))
                             ) {
                                 Text(text = "Adicionar")
 
