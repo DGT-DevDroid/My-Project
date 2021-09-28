@@ -1,6 +1,7 @@
 package br.com.correios.android.ppm.myinvest
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,10 +29,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.correios.android.ppm.myinvest.database.AtivoEntity
+import br.com.correios.android.ppm.myinvest.database.AtivoViewModel
+import br.com.correios.android.ppm.myinvest.database.AtivoViewModelFactory
 import br.com.correios.android.ppm.myinvest.ui.theme.MyInvestTheme
 import br.com.correios.android.ppm.myinvest.ui.theme.Purple500
 import br.com.correios.android.ppm.myinvest.ui.theme.compose.ScreenAddAtivo
 import br.com.correios.android.ppm.myinvest.ui.theme.compose.ScreenMain
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +47,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     GoApp()
-
+                   // CallDatabase()
                 }
             }
         }

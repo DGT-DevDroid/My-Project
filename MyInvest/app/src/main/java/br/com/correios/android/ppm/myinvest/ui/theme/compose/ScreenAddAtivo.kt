@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import br.com.correios.android.ppm.myinvest.R
+import br.com.correios.android.ppm.myinvest.database.AtivoEntity
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.Format
@@ -55,19 +56,15 @@ import java.util.*
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ScreenAddAtivo(navController: NavController) {
-    //val navController = navController
-    val nameValue = remember { mutableStateOf("") }
+
+
     val valorValue = remember { mutableStateOf("") }
     val precoValue = remember { mutableStateOf("") }
     val qtdValue = remember { mutableStateOf("") }
-    val passwordValue = remember { mutableStateOf("") }
-    val confirmPasswordValue = remember { mutableStateOf("") }
-    val passwordVisibility = remember { mutableStateOf(false) }
-    val confirmPasswordVisibility = remember { mutableStateOf(false) }
+
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
-
             modifier = Modifier
                 .fillMaxSize()
                 .background(DeepBlue),
@@ -78,7 +75,6 @@ fun ScreenAddAtivo(navController: NavController) {
         }
 
         Column(
-
             modifier = Modifier
                 .fillMaxWidth()
                 //.fillMaxHeight(0.70f)
@@ -91,11 +87,15 @@ fun ScreenAddAtivo(navController: NavController) {
             TopAppBarCompose(navController)
             Spacer(modifier = Modifier.padding(20.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Adicionar Ativo", fontSize = 30.sp, color = Color.White,  style = MaterialTheme.typography.h6
-                )
+//                Text(
+//                    text = "Adicionar Ativo", fontSize = 30.sp, color = Color.White,  style = MaterialTheme.typography.h6
+//                )
 
-                val ativoList = mutableListOf("","ALPA4","ABEV3","AMER3","ASAI3","AZUL4","B3SA3","BIDI4","BIDI11","BPAN4","BBSE3","BRML3","BBDC3","BBDC4","BRAP4","BBAS3","BRKM5","BRFS3","BPAC11","CRFB3","CCRO3","CMIG4","CIEL3","COGN3","CPLE6","CSAN3","CPFE3","CVCB3","CYRE3","DXCO3","ECOR3","ELET3","ELET6","EMBR3","ENBR3","ENGI11","ENEV3","EGIE3","EQTL3","EZTC3","FLRY3","GGBR4","GOAU4","GOLL4","NTCO3","SOMA3","HAPV3","HYPE3","IGTA3","GNDI3","IRBR3","ITSA4","ITUB4","JBSS3","JHSF3","KLBN11","RENT3","LCAM3","LWSA3","LAME4","LREN3","MGLU3","MRFG3","CASH3","BEEF3","MRVE3","MULT3","PCAR3","PETR3","PETR4","BRDT3","PRIO3","PETZ3","QUAL3","RADL3","RDOR3","RAIL3","SBSP3","SANB11","CSNA3","SULA11","SUZB3","TAEE11","VIVT3","TIMS3","TOTS3","UGPA3","USIM5","VALE3","VIIA3","WEGE3","YDUQ3")
+                val ativoList = mutableListOf("","ALPA4","ABEV3","AMER3","ASAI3","AZUL4","B3SA3","BIDI4","BIDI11","BPAN4","BBSE3","BRML3","BBDC3","BBDC4","BRAP4","BBAS3","BRKM5","BRFS3",
+                    "BPAC11","CRFB3","CCRO3","CMIG4","CIEL3","COGN3","CPLE6","CSAN3","CPFE3","CVCB3","CYRE3","DXCO3","ECOR3","ELET3","ELET6","EMBR3","ENBR3","ENGI11","ENEV3","EGIE3","EQTL3",
+                    "EZTC3","FLRY3","GGBR4","GOAU4","GOLL4","NTCO3","SOMA3","HAPV3","HYPE3","IGTA3","GNDI3","IRBR3","ITSA4","ITUB4","JBSS3","JHSF3","KLBN11","RENT3","LCAM3","LWSA3","LAME4",
+                    "LREN3","MGLU3","MRFG3","CASH3","BEEF3","MRVE3","MULT3","PCAR3","PETR3","PETR4","BRDT3","PRIO3","PETZ3","QUAL3","RADL3","RDOR3","RAIL3","SBSP3","SANB11","CSNA3","SULA11",
+                    "SUZB3","TAEE11","VIVT3","TIMS3","TOTS3","UGPA3","USIM5","VALE3","VIIA3","WEGE3","YDUQ3")
                 var ativoName: String by remember { mutableStateOf(ativoList[0]) }
                 val corretoraList = mutableListOf("    ","CLEAR", "MODAL", "XP", "TORO")
                 var corretoraName: String by remember { mutableStateOf(corretoraList[0]) }
@@ -275,6 +275,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                     .fillMaxWidth(0.8f)
                                     .height(50.dp)
                                     .clip(RoundedCornerShape(13.dp))
+
                             ) {
                                 Text(text = "Adicionar")
 
@@ -291,7 +292,7 @@ fun ScreenAddAtivo(navController: NavController) {
 @Composable
 fun TopAppBarCompose(navController:NavController){
     TopAppBar(
-        title =  { Text(text ="My Invest", fontSize = 20.sp)},
+        title =  { Text(text ="Adicionar Ativo", fontSize = 20.sp)},
         navigationIcon = {
             IconButton(onClick = {
                 navController.navigate("screen_main")

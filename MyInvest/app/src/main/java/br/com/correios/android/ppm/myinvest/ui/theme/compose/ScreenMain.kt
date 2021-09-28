@@ -1,8 +1,10 @@
 package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
+import android.app.Application
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,17 +24,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.correios.android.ppm.myinvest.R
+import br.com.correios.android.ppm.myinvest.database.AtivoEntity
+import br.com.correios.android.ppm.myinvest.database.AtivoViewModel
+import br.com.correios.android.ppm.myinvest.database.AtivoViewModelFactory
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.plcoding.meditationuiyoutube.BottomMenuContent
 import com.plcoding.meditationuiyoutube.Feature
 import com.plcoding.meditationuiyoutube.standardQuadFromTo
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun ScreenMain(navController: NavController) {
@@ -98,15 +108,23 @@ fun ScreenMain(navController: NavController) {
 
 @Composable
 fun listAtivo(){
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        for (i in 1..6){
-            UserCard()
+    val context = LocalContext.current
+    val ativoViewModel: AtivoViewModel = viewModel(
+        factory = AtivoViewModelFactory(context.applicationContext as Application)
+    )
+
+    ativoViewModel.addAtivo(insertAtivoData)
+    val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
+    LazyColumn(modifier = Modifier)
+    {
+        items(getAllRecord.size){ index ->
+            AddDataListItem(getAllRecord[index])
         }
     }
 }
 
 @Composable
-fun UserCard(){
+fun AddDataListItem(ativoEntity: AtivoEntity) {
     Card(
         elevation = 6.dp,
         modifier = Modifier
@@ -116,19 +134,6 @@ fun UserCard(){
             .wrapContentHeight()
 
     ) {
-
-//        Row(modifier = Modifier
-//            .fillMaxWidth()
-//            .wrapContentHeight()
-//            .padding(12.dp)
-//            .padding(12.dp),
-//            horizontalArrangement = Arrangement.SpaceBetween
-//
-//
-//        ) {
-//
-//        }
-
         Column(
             Modifier.background(TextWhite),
             horizontalAlignment = Alignment.Start,
@@ -145,7 +150,7 @@ fun UserCard(){
 
             ) {
                 Text(
-                    text = "PETR4",
+                    text = ativoEntity.nameAtivo,
                     style = MaterialTheme.typography.h6,
                     fontWeight = FontWeight.Bold,
                     color = Color.Blue,
@@ -165,15 +170,15 @@ fun UserCard(){
 
             ) {
                 Text(
-                    text = "Corretora/Banco",
+                    text = "Corretora: " + ativoEntity.nameCorretora,
                     color = DeepBlue,
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier.padding(start = 10.dp)
                 )
                 Text(
-                    text = "R$ 1.540,00",
+                    text = ativoEntity.valorAtivo,
                     style = MaterialTheme.typography.body2,
-                    color = Green,
+                    color = LightGreen4,
                     modifier = Modifier.padding(end = 10.dp)
                 )
             }
@@ -216,7 +221,7 @@ fun UserCard(){
 
             ) {
                 Text(
-                    text = "Qtde:",
+                    text = "Quantidade: " + ativoEntity.qtdAtivo,
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp)
@@ -234,6 +239,137 @@ fun UserCard(){
         }
 
     }
+}
+
+@Composable
+fun UserCard(){
+//    Card(
+//        elevation = 6.dp,
+//        modifier = Modifier
+//            .padding(12.dp)
+//            .fillMaxWidth()
+//            .clip(RoundedCornerShape(10.dp))
+//            .wrapContentHeight()
+//
+//    ) {
+//
+////        Row(modifier = Modifier
+////            .fillMaxWidth()
+////            .wrapContentHeight()
+////            .padding(12.dp)
+////            .padding(12.dp),
+////            horizontalArrangement = Arrangement.SpaceBetween
+////
+////
+////        ) {
+////
+////        }
+//
+//        Column(
+//            Modifier.background(TextWhite),
+//            horizontalAlignment = Alignment.Start,
+//        )
+//
+//        {
+//
+//            Row(
+//                Modifier
+//                    .fillMaxWidth()
+//                    .padding(6.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.SpaceBetween
+//
+//            ) {
+//                Text(
+//                    text = "PETR4",
+//                    style = MaterialTheme.typography.h6,
+//                    fontWeight = FontWeight.Bold,
+//                    color = Color.Blue,
+//                    modifier = Modifier.padding(5.dp)
+//                )
+//
+//                Text(
+//                    text = "Lucro",
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier.padding(end = 10.dp)
+//
+//                )
+//            }
+//            Row( Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//
+//            ) {
+//                Text(
+//                    text = "Corretora/Banco",
+//                    color = DeepBlue,
+//                    style = MaterialTheme.typography.body2,
+//                    modifier = Modifier.padding(start = 10.dp)
+//                )
+//                Text(
+//                    text = "R$ 1.540,00",
+//                    style = MaterialTheme.typography.body2,
+//                    color = Green,
+//                    modifier = Modifier.padding(end = 10.dp)
+//                )
+//            }
+//            Row(Modifier
+//                .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//
+//
+//            ) {
+//                Text(
+//                    text = "Valor Atualizado:",
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier.padding(start = 10.dp)
+//                )
+//                Text(
+//                    text = "Preço Médio:",
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier.padding(end = 10.dp)
+//                )
+//            }
+//            Row(Modifier
+//                .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//
+//
+//            ) {
+//                Text(
+//                    text = "Valor Investido:",
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier.padding(start = 10.dp)
+//                )
+//            }
+//            Row(Modifier
+//                .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//
+//
+//            ) {
+//                Text(
+//                    text = "Qtde:",
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier.padding(start = 10.dp)
+//                )
+//                Text(
+//                    text = "Data:",
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier
+//                        .padding(end = 10.dp)
+//                        .padding(bottom = 10.dp)
+//
+//                )
+//            }
+//        }
+//
+//    }
 }
 
 @Composable
@@ -410,6 +546,7 @@ fun CurrentMeditation(navController: NavController,
                 contentDescription = "Add",
                 tint = Color.White,
                 modifier = Modifier.size(30.dp)
+
             )
         }
     }
@@ -565,3 +702,18 @@ fun TopAppBarCompose(){
 
         )
 }
+
+val date = SimpleDateFormat("dd-MM-yyyy")
+val strDate: String = date.format(Date())
+
+val insertAtivoData = listOf(
+    AtivoEntity(1, "PETR4", "CLEAR", "25,20", "50","500"),
+    AtivoEntity(2, "VALE3", "MODAL", "15,20", "20","500"),
+    AtivoEntity(3, "ITSA4", "CLEAR", "15,80", "30","100"),
+    AtivoEntity(4, "CSNA3", "MODAL", "30,20", "40", "200"),
+    AtivoEntity(5, "AMER3", "TORO", "5,70", "21","600"),
+    AtivoEntity(6, "MGLU3", "CLEAR", "5,70", "21","600"),
+    AtivoEntity(7, "USIM5", "TORO", "5,70", "21","600"),
+    AtivoEntity(8, "TRPL4", "TORO", "5,70", "21","600"),
+
+    )
