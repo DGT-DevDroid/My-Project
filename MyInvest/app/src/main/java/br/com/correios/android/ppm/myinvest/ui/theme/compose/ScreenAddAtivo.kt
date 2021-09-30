@@ -344,8 +344,8 @@ fun ScreenAddAtivo(navController: NavController) {
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
                                 onClick = {
-                                   var ativoId = getAllRecord.size.toLong()
-                                   val insertAtivoData = listOf(AtivoEntity(++ativoId, ativoName, corretoraName, valorValue.value, precoValue.value,qtdValue.value),)
+                                   var ativoId = getAllRecord.size
+                                   val insertAtivoData = listOf(AtivoEntity(++ativoId, ativoName, corretoraName, valorValue.value.toDouble(), precoValue.value.toDouble(),qtdValue.value.toInt(), dataValue.value),)
                                    ativoViewModel.addAtivo(insertAtivoData)
                                 }, modifier = Modifier
                                     .fillMaxWidth(0.8f)
@@ -365,13 +365,6 @@ fun ScreenAddAtivo(navController: NavController) {
     }
 }
 
-//fun CalculaValor(vpreco: String, vqtd: String) {
-//    var preco = vpreco.toDouble()
-//    var qtd = vqtd.toInt()
-//    valor = preco * qtd
-//}
-
-
 @Composable
 fun TopAppBarCompose(navController:NavController){
     TopAppBar(
@@ -386,43 +379,6 @@ fun TopAppBarCompose(navController:NavController){
         actions = {}
     )
 }
-//@Composable
-//fun DatePickerDemo(context: Context) {
-//    val mYear: Int
-//    val mMonth: Int
-//    val mDay: Int
-//    val now = Calendar.getInstance()
-//    mYear = now.get(Calendar.YEAR)
-//    mMonth = now.get(Calendar.MONTH)
-//    mDay = now.get(Calendar.DAY_OF_MONTH)
-//    now.time = Date()
-//    val date = remember { mutableStateOf("") }
-//    val datePickerDialog = DatePickerDialog(
-//        context,
-//        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-//            val cal = Calendar.getInstance()
-//            cal.set(year, month, dayOfMonth)
-//            date.value = getFormattedDate(cal.time, "dd MMM,yyy")
-//        }, mYear, mMonth, mDay
-//    )
-//
-//    val day1= Calendar.getInstance()
-//    day1.set(Calendar.DAY_OF_MONTH, 1)
-//    datePickerDialog.datePicker.minDate = day1.timeInMillis
-//    datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//
-//    ) {
-//        Button(onClick = {
-//            datePickerDialog.show()
-//        }) {
-//            Text(text = "Data")
-//        }
-//        Spacer(modifier = Modifier.size(16.dp))
-//        Text(text = "Selected date: ${date.value}")
-//    }
-//}
 
 fun getFormattedDate(date: Date?, format: String): String {
     try {

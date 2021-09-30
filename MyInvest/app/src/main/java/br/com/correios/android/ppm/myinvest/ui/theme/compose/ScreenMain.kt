@@ -1,6 +1,7 @@
 package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
 import android.app.Application
+import android.icu.text.DecimalFormatSymbols
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -40,6 +41,8 @@ import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.plcoding.meditationuiyoutube.BottomMenuContent
 import com.plcoding.meditationuiyoutube.Feature
 import com.plcoding.meditationuiyoutube.standardQuadFromTo
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -176,12 +179,15 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
                     modifier = Modifier.padding(start = 10.dp)
                 )
                 Text(
-                    text = ativoEntity.valorAtivo,
+                    text = "0.00",
+                            //ativoEntity.valorAtivo.toString(),
                     style = MaterialTheme.typography.body2,
                     color = LightGreen4,
                     modifier = Modifier.padding(end = 10.dp)
                 )
             }
+            val df = DecimalFormat("#0.00")
+            df.roundingMode = RoundingMode.CEILING
             Row(Modifier
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -195,7 +201,7 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
                     modifier = Modifier.padding(start = 10.dp)
                 )
                 Text(
-                    text = "Preço Médio:",
+                    text = "Preço Médio: " + df.format(ativoEntity.precoAtivo),
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(end = 10.dp)
@@ -207,8 +213,9 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
 
 
             ) {
+
                 Text(
-                    text = "Valor Investido:",
+                    text = "Valor Investido: " + df.format(ativoEntity.valorAtivo),
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp)
@@ -227,7 +234,7 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
                     modifier = Modifier.padding(start = 10.dp)
                 )
                 Text(
-                    text = "Data:",
+                    text = "Data: ${ativoEntity.dataCompra}",
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier

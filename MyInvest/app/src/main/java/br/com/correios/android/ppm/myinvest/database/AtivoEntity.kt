@@ -6,15 +6,17 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "my_ativo_list")
 data class AtivoEntity(
     @PrimaryKey(autoGenerate = true)
-    var ativoId: Long,
+    var ativoId: Int,
     @ColumnInfo(name = "name_ativo")
     val nameAtivo: String,
     @ColumnInfo(name = "name_corretora")
     val nameCorretora: String,
     @ColumnInfo(name = "valor_ativo")
-    val valorAtivo: String,
+    val valorAtivo: Double,
     @ColumnInfo(name = "preco_ativo")
-    val precoAtivo: String,
+    val precoAtivo: Double,
     @ColumnInfo(name = "qtd_ativo")
-    val qtdAtivo: String,
+    val qtdAtivo: Int,
+    @ColumnInfo(name = "data_compra")
+    val dataCompra: String,
 )
