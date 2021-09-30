@@ -2,6 +2,9 @@ package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.DatePickerDialog
+import android.content.Context
+import android.widget.DatePicker
 
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
@@ -15,8 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,13 +27,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,6 +49,8 @@ import br.com.correios.android.ppm.myinvest.database.AtivoViewModelFactory
 import br.com.correios.android.ppm.myinvest.model.Ativo
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 //@Preview
@@ -50,9 +60,33 @@ fun ScreenAddAtivo(navController: NavController) {
 
 
     val valorValue = remember { mutableStateOf("") }
+    val dataValue = remember { mutableStateOf("") }
     var precoValue = remember { mutableStateOf("") }
     val qtdValue = remember { mutableStateOf("") }
     val context = LocalContext.current
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+    val now = Calendar.getInstance()
+    mYear = now.get(Calendar.YEAR)
+    mMonth = now.get(Calendar.MONTH)
+    mDay = now.get(Calendar.DAY_OF_MONTH)
+    now.time = Date()
+    val date = remember { mutableStateOf("") }
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val cal = Calendar.getInstance()
+            cal.set(year, month, dayOfMonth)
+            date.value = getFormattedDate(cal.time, "dd MMM,yyy")
+        }, mYear, mMonth, mDay
+    )
+
+    val day1= Calendar.getInstance()
+    day1.set(Calendar.DAY_OF_MONTH, 1)
+    datePickerDialog.datePicker.minDate = day1.timeInMillis
+    datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
+
     val ativoViewModel: AtivoViewModel = viewModel(
         factory = AtivoViewModelFactory(context.applicationContext as Application)
     )
@@ -152,6 +186,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                     imageVector = Icons.Filled.ArrowDropDown,
                                     contentDescription = "Spinner",
                                     modifier = Modifier.rotate(arrowRotationDegree)
+                                    .background(White)
                                 )
 
                                 DropdownMenu(
@@ -202,6 +237,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                     imageVector = Icons.Filled.ArrowDropDown,
                                     contentDescription = "Spinner",
                                     modifier = Modifier.rotate(arrowRotationDegree)
+                                    .background(White)
                                 )
 
                                 DropdownMenu(
@@ -274,6 +310,37 @@ fun ScreenAddAtivo(navController: NavController) {
                                     .clip(RoundedCornerShape(13.dp)),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
+
+
+                            TextField(
+                                value =  dataValue.value,
+                                onValueChange = { dataValue.value = it },
+                                label = { Text(text = "Data: ",color = Color.White) },
+                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                                //placeholder = { Text(text = ) },
+                                singleLine = true,
+                                trailingIcon = {
+
+                                    IconButton(onClick = {
+                                        datePickerDialog.show()
+                                    },
+                                    modifier = Modifier
+                                        .background(White)
+                                    ){
+                                        Icon(Icons.Filled.DateRange, null)
+                                        dataValue.value = date.value
+
+                                    }
+
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .focusable(false)
+                                    .clip(RoundedCornerShape(13.dp)),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+
+                            )
+
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
                                 onClick = {
@@ -318,4 +385,53 @@ fun TopAppBarCompose(navController:NavController){
         },
         actions = {}
     )
+}
+//@Composable
+//fun DatePickerDemo(context: Context) {
+//    val mYear: Int
+//    val mMonth: Int
+//    val mDay: Int
+//    val now = Calendar.getInstance()
+//    mYear = now.get(Calendar.YEAR)
+//    mMonth = now.get(Calendar.MONTH)
+//    mDay = now.get(Calendar.DAY_OF_MONTH)
+//    now.time = Date()
+//    val date = remember { mutableStateOf("") }
+//    val datePickerDialog = DatePickerDialog(
+//        context,
+//        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+//            val cal = Calendar.getInstance()
+//            cal.set(year, month, dayOfMonth)
+//            date.value = getFormattedDate(cal.time, "dd MMM,yyy")
+//        }, mYear, mMonth, mDay
+//    )
+//
+//    val day1= Calendar.getInstance()
+//    day1.set(Calendar.DAY_OF_MONTH, 1)
+//    datePickerDialog.datePicker.minDate = day1.timeInMillis
+//    datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//
+//    ) {
+//        Button(onClick = {
+//            datePickerDialog.show()
+//        }) {
+//            Text(text = "Data")
+//        }
+//        Spacer(modifier = Modifier.size(16.dp))
+//        Text(text = "Selected date: ${date.value}")
+//    }
+//}
+
+fun getFormattedDate(date: Date?, format: String): String {
+    try {
+        if (date != null) {
+            val formatter = SimpleDateFormat(format, Locale.getDefault())
+            return formatter.format(date)
+        }
+    } catch (e: Exception) {
+
+    }
+    return ""
 }
