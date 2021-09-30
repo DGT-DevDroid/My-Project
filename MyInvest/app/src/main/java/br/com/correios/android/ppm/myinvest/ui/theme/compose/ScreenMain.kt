@@ -94,15 +94,15 @@ fun ScreenMain(navController: NavController) {
 //            )
         }
 
-        BottomMenu(
-            items = listOf(
-                BottomMenuContent("Dashboard", R.drawable.ic_home),
-                BottomMenuContent("Cotação", R.drawable.ic_money),
-                BottomMenuContent("Operações", android.R.drawable.ic_menu_view),
-//                BottomMenuContent("Relatórios", R.drawable.ic_relatories),
-                BottomMenuContent("Chat", R.drawable.ic_chat),
-            ), modifier = Modifier.align(Alignment.BottomCenter)
-        )
+//        BottomMenu(
+//            items = listOf(
+//                BottomMenuContent("Dashboard", R.drawable.ic_home),
+//                BottomMenuContent("Cotação", R.drawable.ic_money),
+//                BottomMenuContent("Operações", android.R.drawable.ic_menu_view),
+////                BottomMenuContent("Relatórios", R.drawable.ic_relatories),
+//                BottomMenuContent("Chat", R.drawable.ic_chat),
+//            ), modifier = Modifier.align(Alignment.BottomCenter)
+//        )
     }
 }
 
@@ -113,9 +113,9 @@ fun listAtivo(){
         factory = AtivoViewModelFactory(context.applicationContext as Application)
     )
 
-    ativoViewModel.addAtivo(insertAtivoData)
+    //ativoViewModel.addAtivo(insertAtivoData)
     val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
-    LazyColumn(modifier = Modifier)
+    LazyColumn(modifier = Modifier.padding(10.dp))
     {
         items(getAllRecord.size){ index ->
             AddDataListItem(getAllRecord[index])
@@ -241,136 +241,6 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
     }
 }
 
-@Composable
-fun UserCard(){
-//    Card(
-//        elevation = 6.dp,
-//        modifier = Modifier
-//            .padding(12.dp)
-//            .fillMaxWidth()
-//            .clip(RoundedCornerShape(10.dp))
-//            .wrapContentHeight()
-//
-//    ) {
-//
-////        Row(modifier = Modifier
-////            .fillMaxWidth()
-////            .wrapContentHeight()
-////            .padding(12.dp)
-////            .padding(12.dp),
-////            horizontalArrangement = Arrangement.SpaceBetween
-////
-////
-////        ) {
-////
-////        }
-//
-//        Column(
-//            Modifier.background(TextWhite),
-//            horizontalAlignment = Alignment.Start,
-//        )
-//
-//        {
-//
-//            Row(
-//                Modifier
-//                    .fillMaxWidth()
-//                    .padding(6.dp),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.SpaceBetween
-//
-//            ) {
-//                Text(
-//                    text = "PETR4",
-//                    style = MaterialTheme.typography.h6,
-//                    fontWeight = FontWeight.Bold,
-//                    color = Color.Blue,
-//                    modifier = Modifier.padding(5.dp)
-//                )
-//
-//                Text(
-//                    text = "Lucro",
-//                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
-//                    modifier = Modifier.padding(end = 10.dp)
-//
-//                )
-//            }
-//            Row( Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//
-//            ) {
-//                Text(
-//                    text = "Corretora/Banco",
-//                    color = DeepBlue,
-//                    style = MaterialTheme.typography.body2,
-//                    modifier = Modifier.padding(start = 10.dp)
-//                )
-//                Text(
-//                    text = "R$ 1.540,00",
-//                    style = MaterialTheme.typography.body2,
-//                    color = Green,
-//                    modifier = Modifier.padding(end = 10.dp)
-//                )
-//            }
-//            Row(Modifier
-//                .fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//
-//
-//            ) {
-//                Text(
-//                    text = "Valor Atualizado:",
-//                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
-//                    modifier = Modifier.padding(start = 10.dp)
-//                )
-//                Text(
-//                    text = "Preço Médio:",
-//                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
-//                    modifier = Modifier.padding(end = 10.dp)
-//                )
-//            }
-//            Row(Modifier
-//                .fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//
-//
-//            ) {
-//                Text(
-//                    text = "Valor Investido:",
-//                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
-//                    modifier = Modifier.padding(start = 10.dp)
-//                )
-//            }
-//            Row(Modifier
-//                .fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//
-//
-//            ) {
-//                Text(
-//                    text = "Qtde:",
-//                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
-//                    modifier = Modifier.padding(start = 10.dp)
-//                )
-//                Text(
-//                    text = "Data:",
-//                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
-//                    modifier = Modifier
-//                        .padding(end = 10.dp)
-//                        .padding(bottom = 10.dp)
-//
-//                )
-//            }
-//        }
-//
-//    }
-}
 
 @Composable
 fun BottomMenu(
@@ -703,17 +573,17 @@ fun TopAppBarCompose(){
         )
 }
 
-val date = SimpleDateFormat("dd-MM-yyyy")
-val strDate: String = date.format(Date())
+//val date = SimpleDateFormat("dd-MM-yyyy")
+//val strDate: String = date.format(Date())
 
-val insertAtivoData = listOf(
-    AtivoEntity(1, "PETR4", "CLEAR", "25,20", "50","500"),
-    AtivoEntity(2, "VALE3", "MODAL", "15,20", "20","500"),
-    AtivoEntity(3, "ITSA4", "CLEAR", "15,80", "30","100"),
-    AtivoEntity(4, "CSNA3", "MODAL", "30,20", "40", "200"),
-    AtivoEntity(5, "AMER3", "TORO", "5,70", "21","600"),
-    AtivoEntity(6, "MGLU3", "CLEAR", "5,70", "21","600"),
-    AtivoEntity(7, "USIM5", "TORO", "5,70", "21","600"),
-    AtivoEntity(8, "TRPL4", "TORO", "5,70", "21","600"),
-
-    )
+//val insertAtivoData = listOf(
+//    AtivoEntity(1, "PETR4", "CLEAR", "25,20", "50","500"),
+//    AtivoEntity(2, "VALE3", "MODAL", "15,20", "20","500"),
+//    AtivoEntity(3, "ITSA4", "CLEAR", "15,80", "30","100"),
+//    AtivoEntity(4, "CSNA3", "MODAL", "30,20", "40", "200"),
+//    AtivoEntity(5, "AMER3", "TORO", "5,70", "21","600"),
+//    AtivoEntity(6, "MGLU3", "CLEAR", "5,70", "21","600"),
+//    AtivoEntity(7, "USIM5", "TORO", "5,70", "21","600"),
+//    AtivoEntity(8, "TRPL4", "TORO", "5,70", "21","600"),
+//
+//    )

@@ -1,22 +1,15 @@
 package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
 import android.annotation.SuppressLint
-import android.icu.number.FormattedNumber
-import android.icu.text.DecimalFormat
-import android.icu.text.FormattedValue
-import android.provider.ContactsContract
-import android.text.format.Formatter
-import android.widget.CalendarView
-import android.widget.DatePicker
-import androidx.annotation.RequiresPermission
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Application
+
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,33 +17,31 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import br.com.correios.android.ppm.myinvest.R
 import br.com.correios.android.ppm.myinvest.database.AtivoEntity
+import br.com.correios.android.ppm.myinvest.database.AtivoViewModel
+import br.com.correios.android.ppm.myinvest.database.AtivoViewModelFactory
+import br.com.correios.android.ppm.myinvest.model.Ativo
 import br.com.correios.android.ppm.myinvest.ui.theme.*
-import com.google.android.material.datepicker.MaterialDatePicker
-import java.text.Format
-import java.text.NumberFormat
-import java.util.*
+import kotlinx.coroutines.flow.MutableStateFlow
+
 
 //@Preview
 @SuppressLint("UnusedTransitionTargetStateParameter")
@@ -59,9 +50,13 @@ fun ScreenAddAtivo(navController: NavController) {
 
 
     val valorValue = remember { mutableStateOf("") }
-    val precoValue = remember { mutableStateOf("") }
+    var precoValue = remember { mutableStateOf("") }
     val qtdValue = remember { mutableStateOf("") }
-
+    val context = LocalContext.current
+    val ativoViewModel: AtivoViewModel = viewModel(
+        factory = AtivoViewModelFactory(context.applicationContext as Application)
+    )
+    val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
@@ -71,6 +66,7 @@ fun ScreenAddAtivo(navController: NavController) {
             contentAlignment = Alignment.TopCenter
         ) {
             //Image(image)
+
 
         }
 
@@ -112,7 +108,6 @@ fun ScreenAddAtivo(navController: NavController) {
                 }, label = "rotationDegree") {
                     if (expandedAtivo) 180f else 0f
                 }
-                val context = LocalContext.current
 
                 Column(
                     modifier = Modifier
@@ -228,18 +223,8 @@ fun ScreenAddAtivo(navController: NavController) {
                                 }
 
                             }
-                            TextField(
-                                value = valorValue.value,
-                                onValueChange = { valorValue.value = it },
-                                label = { Text(text = "Valor (R$): ",color = Color.White) },
-                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
-                                //placeholder = { Text(text = "Corretora: ") },
-                                singleLine = true,
-                                modifier = Modifier
-                                    .fillMaxWidth(0.8f)
-                                    .clip(RoundedCornerShape(13.dp)),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                            )
+
+
 
                             TextField(
                                 value = precoValue.value,
@@ -253,7 +238,9 @@ fun ScreenAddAtivo(navController: NavController) {
                                     .clip(RoundedCornerShape(13.dp)),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
+
                             TextField(
+
                                 value = qtdValue.value,
                                 onValueChange = { qtdValue.value = it },
                                 textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
@@ -268,10 +255,32 @@ fun ScreenAddAtivo(navController: NavController) {
                                     .clip(RoundedCornerShape(13.dp)),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
-
+                            TextField(
+                                value =  valorValue.value,
+                                onValueChange = { valorValue.value = it },
+                                label = { Text(text = "Valor (R$): ",color = Color.White) },
+                                textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                                //placeholder = { Text(text = ) },
+                                singleLine = true,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .focusable(false)
+                                    .onSizeChanged {
+                                        if(precoValue.value != "" && qtdValue.value != ""){
+                                            var valor = precoValue.value.toDouble() * qtdValue.value.toInt()
+                                            valorValue.value = valor.toString()
+                                        }
+                                    }
+                                    .clip(RoundedCornerShape(13.dp)),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
-                                onClick = { }, modifier = Modifier
+                                onClick = {
+                                   var ativoId = getAllRecord.size.toLong()
+                                   val insertAtivoData = listOf(AtivoEntity(++ativoId, ativoName, corretoraName, valorValue.value, precoValue.value,qtdValue.value),)
+                                   ativoViewModel.addAtivo(insertAtivoData)
+                                }, modifier = Modifier
                                     .fillMaxWidth(0.8f)
                                     .height(50.dp)
                                     .clip(RoundedCornerShape(13.dp))
@@ -288,6 +297,13 @@ fun ScreenAddAtivo(navController: NavController) {
         }
     }
 }
+
+//fun CalculaValor(vpreco: String, vqtd: String) {
+//    var preco = vpreco.toDouble()
+//    var qtd = vqtd.toInt()
+//    valor = preco * qtd
+//}
+
 
 @Composable
 fun TopAppBarCompose(navController:NavController){
