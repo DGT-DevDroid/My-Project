@@ -60,7 +60,7 @@ fun ScreenMain(navController: NavController) {
         Column {
             TopAppBarCompose()
             GreetingSection()
-         //   ChipSection(chips = listOf("Dashboard", "Cotação", "Operações"))
+            ChipSection(navController, chips = listOf("Dashboard", "Cotação", "Operações"))
             CurrentMeditation(navController)
             listAtivo()
 //            FeatureSection(
@@ -350,35 +350,39 @@ fun GreetingSection(
         }
     }
 }
-//
-//@Composable
-//fun ChipSection(
-//    chips: List<String>
-//) {
-//    var selectedChipIndex by remember {
-//        mutableStateOf(0)
-//    }
-//    LazyRow {
-//        items(chips.size) {
-//            Box(
-//                contentAlignment = Alignment.Center,
-//                modifier = Modifier
-//                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
-//                    .clickable {
-//                        selectedChipIndex = it
-//                    }
-//                    .clip(RoundedCornerShape(10.dp))
-//                    .background(
-//                        if (selectedChipIndex == it) ButtonBlue
-//                        else DarkerButtonBlue
-//                    )
-//                    .padding(15.dp)
-//            ) {
-//                Text(text = chips[it], color = TextWhite)
-//            }
-//        }
-//    }
-//}
+
+@Composable
+fun ChipSection(navController: NavController,
+    chips: List<String>
+) {
+    var selectedChipIndex by remember {
+        mutableStateOf(0)
+    }
+    LazyRow {
+        items(chips.size) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
+                    .clickable {
+                        selectedChipIndex = it
+                        if (selectedChipIndex == 2) {
+                            navController.navigate("historico_operacoes")
+                        }
+
+                    }
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        if (selectedChipIndex == it) ButtonBlue
+                        else DarkerButtonBlue
+                    )
+                    .padding(15.dp)
+            ) {
+                Text(text = chips[it], color = TextWhite)
+            }
+        }
+    }
+}
 
 @Composable
 fun CurrentMeditation(navController: NavController,

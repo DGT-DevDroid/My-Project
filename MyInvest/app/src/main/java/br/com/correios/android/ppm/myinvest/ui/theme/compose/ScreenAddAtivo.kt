@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
+import android.widget.Toast
 
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
@@ -30,6 +31,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -43,55 +45,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import br.com.correios.android.ppm.myinvest.database.AtivoEntity
-import br.com.correios.android.ppm.myinvest.database.AtivoViewModel
-import br.com.correios.android.ppm.myinvest.database.AtivoViewModelFactory
+import br.com.correios.android.ppm.myinvest.database.*
 import br.com.correios.android.ppm.myinvest.model.Ativo
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.util.*
-
+import java.util.Calendar.getInstance
+import java.util.Currency.getInstance
 
 //@Preview
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
+
 fun ScreenAddAtivo(navController: NavController) {
-
-
     val valorValue = remember { mutableStateOf("") }
     val dataValue = remember { mutableStateOf("") }
     var precoValue = remember { mutableStateOf("") }
     val qtdValue = remember { mutableStateOf("") }
+    val viewModel: DataViewModel = viewModel()
     val context = LocalContext.current
-    val mYear: Int
-    val mMonth: Int
-    val mDay: Int
-    val now = Calendar.getInstance()
-    mYear = now.get(Calendar.YEAR)
-    mMonth = now.get(Calendar.MONTH)
-    mDay = now.get(Calendar.DAY_OF_MONTH)
-    now.time = Date()
-    val date = remember { mutableStateOf("") }
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            val cal = Calendar.getInstance()
-            cal.set(year, month, dayOfMonth)
-            date.value = getFormattedDate(cal.time, "dd MMM,yyy")
-        }, mYear, mMonth, mDay
-    )
-
-    val day1= Calendar.getInstance()
-    day1.set(Calendar.DAY_OF_MONTH, 1)
-    datePickerDialog.datePicker.minDate = day1.timeInMillis
-    datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
-
     val ativoViewModel: AtivoViewModel = viewModel(
         factory = AtivoViewModelFactory(context.applicationContext as Application)
     )
     val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
-
+    val dateTime = viewModel.time.observeAsState()
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
             modifier = Modifier
@@ -100,8 +78,6 @@ fun ScreenAddAtivo(navController: NavController) {
             contentAlignment = Alignment.TopCenter
         ) {
             //Image(image)
-
-
         }
 
         Column(
@@ -117,9 +93,6 @@ fun ScreenAddAtivo(navController: NavController) {
             TopAppBarCompose(navController)
             Spacer(modifier = Modifier.padding(20.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                Text(
-//                    text = "Adicionar Ativo", fontSize = 30.sp, color = Color.White,  style = MaterialTheme.typography.h6
-//                )
 
                 val ativoList = mutableListOf("","ALPA4","ABEV3","AMER3","ASAI3","AZUL4","B3SA3","BIDI4","BIDI11","BPAN4","BBSE3","BRML3","BBDC3","BBDC4","BRAP4","BBAS3","BRKM5","BRFS3",
                     "BPAC11","CRFB3","CCRO3","CMIG4","CIEL3","COGN3","CPLE6","CSAN3","CPFE3","CVCB3","CYRE3","DXCO3","ECOR3","ELET3","ELET6","EMBR3","ENBR3","ENGI11","ENEV3","EGIE3","EQTL3",
@@ -186,7 +159,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                     imageVector = Icons.Filled.ArrowDropDown,
                                     contentDescription = "Spinner",
                                     modifier = Modifier.rotate(arrowRotationDegree)
-                                    .background(White)
+                                    .background(Cyan)
                                 )
 
                                 DropdownMenu(
@@ -237,7 +210,7 @@ fun ScreenAddAtivo(navController: NavController) {
                                     imageVector = Icons.Filled.ArrowDropDown,
                                     contentDescription = "Spinner",
                                     modifier = Modifier.rotate(arrowRotationDegree)
-                                    .background(White)
+                                    .background(Cyan)
                                 )
 
                                 DropdownMenu(
@@ -313,22 +286,24 @@ fun ScreenAddAtivo(navController: NavController) {
 
 
                             TextField(
+
                                 value =  dataValue.value,
                                 onValueChange = { dataValue.value = it },
                                 label = { Text(text = "Data: ",color = Color.White) },
                                 textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
-                                //placeholder = { Text(text = ) },
+                                //placeholder = { Text(text = "$currentDateTime") },
                                 singleLine = true,
                                 trailingIcon = {
 
                                     IconButton(onClick = {
-                                        datePickerDialog.show()
+                                        viewModel.selectDateTime(context)
                                     },
                                     modifier = Modifier
-                                        .background(White)
+                                        .background(Cyan)
+
                                     ){
                                         Icon(Icons.Filled.DateRange, null)
-                                        dataValue.value = date.value
+                                        dataValue.value = dateTime.value ?: "No Time Set"
 
                                     }
 
@@ -344,9 +319,24 @@ fun ScreenAddAtivo(navController: NavController) {
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
                                 onClick = {
-                                   var ativoId = getAllRecord.size
-                                   val insertAtivoData = listOf(AtivoEntity(++ativoId, ativoName, corretoraName, valorValue.value.toDouble(), precoValue.value.toDouble(),qtdValue.value.toInt(), dataValue.value),)
-                                   ativoViewModel.addAtivo(insertAtivoData)
+                                    if (corretoraName == "" || ativoName == "" || qtdValue.value == "" || dataValue.value == ""){
+                                        Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+
+                                } else {
+                                        var ativoId = getAllRecord.size
+                                        val insertAtivoData = listOf(
+                                            AtivoEntity(
+                                                ++ativoId,
+                                                ativoName,
+                                                corretoraName,
+                                                valorValue.value.toDouble(),
+                                                precoValue.value.toDouble(),
+                                                qtdValue.value.toInt(),
+                                                dataValue.value
+                                            ),
+                                        )
+                                        ativoViewModel.addAtivo(insertAtivoData)
+                                    }
                                 }, modifier = Modifier
                                     .fillMaxWidth(0.8f)
                                     .height(50.dp)
@@ -380,14 +370,4 @@ fun TopAppBarCompose(navController:NavController){
     )
 }
 
-fun getFormattedDate(date: Date?, format: String): String {
-    try {
-        if (date != null) {
-            val formatter = SimpleDateFormat(format, Locale.getDefault())
-            return formatter.format(date)
-        }
-    } catch (e: Exception) {
 
-    }
-    return ""
-}
