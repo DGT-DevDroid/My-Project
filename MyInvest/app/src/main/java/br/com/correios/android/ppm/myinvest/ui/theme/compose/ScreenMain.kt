@@ -193,7 +193,7 @@ fun AddDataListItem(ativo: String, soma: Int, valorTotalInvestido: Double) {
                     modifier = Modifier.padding(5.dp)
                 )
                 Text(
-                    text = "Lucro",
+                    text = "Lucro:  0.00",
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(end = 10.dp)
@@ -204,12 +204,6 @@ fun AddDataListItem(ativo: String, soma: Int, valorTotalInvestido: Double) {
                 horizontalArrangement = Arrangement.SpaceBetween
 
             ) {
-//                Text(
-//                    text = "Corretora: " + ativoEntity.nameCorretora,
-//                    color = DeepBlue,
-//                    style = MaterialTheme.typography.body2,
-//                    modifier = Modifier.padding(start = 10.dp)
-//                )
 //                Text(
 //                    text = "0.00",
 //                            //ativoEntity.valorAtivo.toString(),
@@ -227,17 +221,20 @@ fun AddDataListItem(ativo: String, soma: Int, valorTotalInvestido: Double) {
 
             ) {
                 Text(
-                    text = "Valor Atualizado:",
+                    text = "Valor: ",
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp)
                 )
 //                Text(
-//                    text = "Preço Médio: " + df.format(ativoEntity.precoAtivo),
+//                    text = "0.00",
+//                            //ativoEntity.valorAtivo.toString(),
 //                    style = MaterialTheme.typography.body2,
-//                    color = DeepBlue,
+//                    color = LightGreen4,
 //                    modifier = Modifier.padding(end = 10.dp)
 //                )
+
+
             }
             Row(Modifier
                 .fillMaxWidth(),
@@ -252,6 +249,12 @@ fun AddDataListItem(ativo: String, soma: Int, valorTotalInvestido: Double) {
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp)
                 )
+                Text(
+                    text = "Prejuízo: 0.00",
+                    style = MaterialTheme.typography.body2,
+                    color = DeepBlue,
+                    modifier = Modifier.padding(end = 10.dp)
+                )
             }
             Row(Modifier
                 .fillMaxWidth(),
@@ -264,6 +267,12 @@ fun AddDataListItem(ativo: String, soma: Int, valorTotalInvestido: Double) {
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp).padding(end = 10.dp).padding(bottom = 10.dp)
+                )
+                Text(
+                    text = "Preço Médio: 0.00",
+                    style = MaterialTheme.typography.body2,
+                    color = DeepBlue,
+                    modifier = Modifier.padding(end = 10.dp)
                 )
             }
         }
