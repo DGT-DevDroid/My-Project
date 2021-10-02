@@ -1,30 +1,25 @@
 package br.com.correios.android.ppm.myinvest.ui.theme.compose
 
 import android.app.Application
-import android.icu.text.DecimalFormatSymbols
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,18 +29,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.correios.android.ppm.myinvest.R
-import br.com.correios.android.ppm.myinvest.database.AtivoEntity
 import br.com.correios.android.ppm.myinvest.database.AtivoViewModel
 import br.com.correios.android.ppm.myinvest.database.AtivoViewModelFactory
 import br.com.correios.android.ppm.myinvest.ui.theme.*
 import com.plcoding.meditationuiyoutube.BottomMenuContent
-import com.plcoding.meditationuiyoutube.Feature
-import com.plcoding.meditationuiyoutube.standardQuadFromTo
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
-import java.util.*
 
+@ExperimentalFoundationApi
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun ScreenMain(navController: NavController) {
 
@@ -62,7 +54,8 @@ fun ScreenMain(navController: NavController) {
             GreetingSection()
             ChipSection(navController, chips = listOf("Dashboard", "Cotação", "Operações"))
             CurrentMeditation(navController)
-            listAtivo()
+            HistoricoOperacao()
+            //listAtivo()
 //            FeatureSection(
 //                features = listOf(
 //                    Feature(
@@ -109,25 +102,65 @@ fun ScreenMain(navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
+@ExperimentalFoundationApi
 @Composable
-fun listAtivo(){
-    val context = LocalContext.current
-    val ativoViewModel: AtivoViewModel = viewModel(
-        factory = AtivoViewModelFactory(context.applicationContext as Application)
-    )
+fun HistoricoOperacao() {
 
-    //ativoViewModel.addAtivo(insertAtivoData)
-    val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
-    LazyColumn(modifier = Modifier.padding(10.dp))
-    {
-        items(getAllRecord.size){ index ->
-            AddDataListItem(getAllRecord[index])
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp)
+            .background(DeepBlue2)
+    ) {
+
+        val context: Context = LocalContext.current
+        val ativoViewModel: AtivoViewModel = viewModel(
+            factory = AtivoViewModelFactory(context.applicationContext as Application)
+        )
+        val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
+        LazyColumn {
+            val grouped = getAllRecord.groupBy {it.nameAtivo}
+            grouped.forEach { initial,  getAllRecord ->
+                stickyHeader {
+                    var soma = 0
+                    var valorTotalInvestido = 0.00
+                    for (item in 0 .. getAllRecord.size-1) {
+                        soma += getAllRecord[item].qtdAtivo
+                        valorTotalInvestido += getAllRecord[item].valorAtivo
+
+                    }
+                    AddDataListItem(initial, soma, valorTotalInvestido )
+
+                }
+                //AddDataListItem(getAllRecord)
+//                items(getAllRecord.size){ index ->
+//                   // ListOperacoes(getAllRecord[index])
+//                }
+            }
         }
     }
+
 }
+//@Composable
+//fun listAtivo(){
+//    val context = LocalContext.current
+//    val ativoViewModel: AtivoViewModel = viewModel(
+//        factory = AtivoViewModelFactory(context.applicationContext as Application)
+//    )
+//
+//    //ativoViewModel.addAtivo(insertAtivoData)
+//    val getAllRecord = ativoViewModel.readAllData.observeAsState(listOf()).value
+//    LazyColumn(modifier = Modifier.padding(10.dp))
+//    {
+//        items(getAllRecord.size){ index ->
+//            AddDataListItem(getAllRecord[index])
+//        }
+//    }
+//}
 
 @Composable
-fun AddDataListItem(ativoEntity: AtivoEntity) {
+fun AddDataListItem(ativo: String, soma: Int, valorTotalInvestido: Double) {
     Card(
         elevation = 6.dp,
         modifier = Modifier
@@ -138,7 +171,7 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
 
     ) {
         Column(
-            Modifier.background(TextWhite),
+            Modifier.background(Teal200),
             horizontalAlignment = Alignment.Start,
         )
 
@@ -153,13 +186,12 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
 
             ) {
                 Text(
-                    text = ativoEntity.nameAtivo,
+                    text = ativo,
                     style = MaterialTheme.typography.h6,
                     fontWeight = FontWeight.Bold,
                     color = Color.Blue,
                     modifier = Modifier.padding(5.dp)
                 )
-
                 Text(
                     text = "Lucro",
                     style = MaterialTheme.typography.body2,
@@ -172,21 +204,21 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
                 horizontalArrangement = Arrangement.SpaceBetween
 
             ) {
-                Text(
-                    text = "Corretora: " + ativoEntity.nameCorretora,
-                    color = DeepBlue,
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-                Text(
-                    text = "0.00",
-                            //ativoEntity.valorAtivo.toString(),
-                    style = MaterialTheme.typography.body2,
-                    color = LightGreen4,
-                    modifier = Modifier.padding(end = 10.dp)
-                )
+//                Text(
+//                    text = "Corretora: " + ativoEntity.nameCorretora,
+//                    color = DeepBlue,
+//                    style = MaterialTheme.typography.body2,
+//                    modifier = Modifier.padding(start = 10.dp)
+//                )
+//                Text(
+//                    text = "0.00",
+//                            //ativoEntity.valorAtivo.toString(),
+//                    style = MaterialTheme.typography.body2,
+//                    color = LightGreen4,
+//                    modifier = Modifier.padding(end = 10.dp)
+//                )
             }
-            val df = DecimalFormat("#0.00")
+            val df = DecimalFormat("##,##0.00")
             df.roundingMode = RoundingMode.CEILING
             Row(Modifier
                 .fillMaxWidth(),
@@ -200,12 +232,12 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp)
                 )
-                Text(
-                    text = "Preço Médio: " + df.format(ativoEntity.precoAtivo),
-                    style = MaterialTheme.typography.body2,
-                    color = DeepBlue,
-                    modifier = Modifier.padding(end = 10.dp)
-                )
+//                Text(
+//                    text = "Preço Médio: " + df.format(ativoEntity.precoAtivo),
+//                    style = MaterialTheme.typography.body2,
+//                    color = DeepBlue,
+//                    modifier = Modifier.padding(end = 10.dp)
+//                )
             }
             Row(Modifier
                 .fillMaxWidth(),
@@ -215,7 +247,7 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
             ) {
 
                 Text(
-                    text = "Valor Investido: " + df.format(ativoEntity.valorAtivo),
+                    text = "Valor Investido: " + df.format(valorTotalInvestido),
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
                     modifier = Modifier.padding(start = 10.dp)
@@ -228,19 +260,10 @@ fun AddDataListItem(ativoEntity: AtivoEntity) {
 
             ) {
                 Text(
-                    text = "Quantidade: " + ativoEntity.qtdAtivo,
+                    text = "Quantidade: " + soma,
                     style = MaterialTheme.typography.body2,
                     color = DeepBlue,
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-                Text(
-                    text = "Data: ${ativoEntity.dataCompra}",
-                    style = MaterialTheme.typography.body2,
-                    color = DeepBlue,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .padding(bottom = 10.dp)
-
+                    modifier = Modifier.padding(start = 10.dp).padding(end = 10.dp).padding(bottom = 10.dp)
                 )
             }
         }
