@@ -13,11 +13,8 @@ public class ConsumoEntity {
     @NonNull
     @ColumnInfo(name = "id_consumo")
     int idConsumo;
-
-
     @ColumnInfo(name = "qtd")
-    int qtd;
-
+    Double qtd;
     @ColumnInfo(name = "data_consumo")
     String dataConsumo;
 
@@ -29,11 +26,11 @@ public class ConsumoEntity {
         this.idConsumo = idConsumo;
     }
 
-    public int getQtd() {
+    public Double getQtd() {
         return qtd;
     }
 
-    public void setQtd(int qtd) {
+    public void setQtd(Double qtd) {
         this.qtd = qtd;
     }
 
@@ -45,11 +42,11 @@ public class ConsumoEntity {
         this.dataConsumo = dataConsumo;
     }
 
-    @Override
-    public String toString() {
-        return "ConsumoEntity{" +
-                "qtd=" + qtd +
-                ", dataConsumo='" + dataConsumo + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "ConsumoEntity{" +
+//                "qtd=" + qtd +
+//                ", dataConsumo='" + dataConsumo + '\'' +
+//                '}';
+//    }
 }

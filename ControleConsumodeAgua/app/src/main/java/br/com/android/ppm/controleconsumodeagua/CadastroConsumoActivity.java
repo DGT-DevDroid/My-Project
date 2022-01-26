@@ -1,5 +1,7 @@
 package br.com.android.ppm.controleconsumodeagua;
 
+import static java.lang.Integer.parseInt;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -42,7 +44,8 @@ public class CadastroConsumoActivity extends AppCompatActivity {
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gravaDadosConsumo(Integer.parseInt(String.valueOf(txtqtd.getText())), txtdata.getText().toString());
+                gravaDadosConsumo(Double.parseDouble(txtqtd.getText().toString()), txtdata.getText().toString());
+                //gravaDadosConsumo(10.52, "01/02/2022");
                 limpaCamposCadastro(txtqtd, txtdata);
                 Toast.makeText(CadastroConsumoActivity.this, getString(R.string.cadastro_com_sucesso), Toast.LENGTH_SHORT).show();
             }
@@ -72,10 +75,11 @@ public class CadastroConsumoActivity extends AppCompatActivity {
         txtdata.setText(null);
     }
 
-    private void gravaDadosConsumo(int qtd, String data) {
+    private void gravaDadosConsumo(Double qtd, String data) {
         //SimpleDateFormat fmtData = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         ConsumoEntity dadosConsumo = new ConsumoEntity();
-        dadosConsumo.setIdConsumo(listaConsumoDAO.lista().size()+1);
+        int id =  +listaConsumoDAO.lista().size();
+        dadosConsumo.setIdConsumo(id);
         dadosConsumo.setQtd(qtd);
         dadosConsumo.setDataConsumo(data.toString());
         listaConsumoDAO.adiciona(dadosConsumo);

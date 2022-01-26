@@ -2,11 +2,9 @@ package br.com.android.ppm.controleconsumodeagua.dao;
 
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
 
@@ -20,8 +18,8 @@ public interface ConsumoDAO {
     @Query("SELECT * FROM ConsumoEntity ORDER BY data_consumo")
     List<ConsumoEntity> lista();
 
-//    @Query("SELECT * FROM ConsumoEntity WHERE numero_palete=:numeroPalete")
-//    PaleteEntity getPalete(Long numeroPalete);
+    @Query("SELECT * FROM ConsumoEntity WHERE id_consumo=:idConsumo")
+    ConsumoEntity getIdConsumo(Long idConsumo);
 //
 //    @Update
 //    void atualiza(PaleteEntity paleteEntity);
@@ -32,9 +30,10 @@ public interface ConsumoDAO {
 //    @Insert
 //    long[] insertAll(List<PaleteEntity> listaPalete);
 //
-//    @Query("DELETE FROM ConsumoEntity WHERE numero_palete=:numeroPalete")
-//    void apagaPalete(String numeroPalete);
-//
-//    @Query("DELETE FROM ConsumoEntity")
-//    void apagaTudo();
+
+    @Query("DELETE FROM ConsumoEntity WHERE id_consumo=:idConsumo")
+    void delete(int idConsumo);
+
+    @Query("DELETE FROM ConsumoEntity")
+    void apagaTudo();
 }

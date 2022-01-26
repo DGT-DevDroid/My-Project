@@ -1,20 +1,29 @@
 package br.com.android.ppm.controleconsumodeagua.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.ArrayList;
+
+import br.com.android.ppm.controleconsumodeagua.MainActivity;
 import br.com.android.ppm.controleconsumodeagua.R;
+import br.com.android.ppm.controleconsumodeagua.dao.ConsumoDAO;
 import br.com.android.ppm.controleconsumodeagua.entity.ConsumoEntity;
 import br.com.android.ppm.controleconsumodeagua.modal.Consumo;
+import br.com.android.ppm.controleconsumodeagua.persistence.AppDatabase;
 
 public class ListaConsumoAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Consumo> listaConsumo;
+    private ConsumoDAO consumoDAO;
 
     public ListaConsumoAdapter(Context context, ArrayList<Consumo> listaConsumo){
         this.context = context;
@@ -47,9 +56,17 @@ public class ListaConsumoAdapter extends BaseAdapter {
         return 0;
     }
 
+    private void excluir(int idConsumo){
+        consumoDAO.delete(idConsumo);
+        context.startActivity(new Intent(context.getApplicationContext(), MainActivity.class));
+
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        consumoDAO = AppDatabase.getInstance(context.getApplicationContext()).consumoDAO();
+
         if (convertView == null) {
             holder = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater) context
@@ -58,6 +75,7 @@ public class ListaConsumoAdapter extends BaseAdapter {
 
             holder.idQdtConsumo  = convertView.findViewById(R.id.idQdtConsumo);
             holder.idData = convertView.findViewById(R.id.idData);
+            holder.mDelete = convertView.findViewById(R.id.id_delete);
 
             convertView.setTag(holder);
 
@@ -67,6 +85,21 @@ public class ListaConsumoAdapter extends BaseAdapter {
 
         holder.idQdtConsumo.setText(String.valueOf(listaConsumo.get(position).getQtd()));
         holder.idData.setText(listaConsumo.get(position).getData());
+        holder.mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new MaterialAlertDialogBuilder(context)
+                        .setTitle("Atenção")
+                        .setMessage("Deseja excluir o registro ")
+                        .setNeutralButton(R.string.label_cancelar,(dialogInterface, i) -> {})
+                        .setPositiveButton("Sim", (dialogInterface, i) -> {
+                            excluir(listaConsumo.get(position).getId());
+                            dialogInterface.dismiss();
+                        })
+                        .show();
+            }
+        });
 
         return convertView;
     }
@@ -74,6 +107,7 @@ public class ListaConsumoAdapter extends BaseAdapter {
     private class ViewHolder {
 
         protected TextView idQdtConsumo, idData;
+        ImageView mDelete;
 
     }
 

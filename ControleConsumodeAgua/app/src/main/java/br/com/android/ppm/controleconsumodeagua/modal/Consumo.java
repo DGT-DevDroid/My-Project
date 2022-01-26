@@ -2,7 +2,7 @@ package br.com.android.ppm.controleconsumodeagua.modal;
 
 public class Consumo {
     private int id;
-    private int qtd;
+    private Double qtd;
     private String data;
 
     public int getId() {
@@ -13,11 +13,11 @@ public class Consumo {
         this.id = id;
     }
 
-    public int getQtd() {
+    public Double getQtd() {
         return qtd;
     }
 
-    public void setQtd(int qtd) {
+    public void setQtd(Double qtd) {
         this.qtd = qtd;
     }
 
