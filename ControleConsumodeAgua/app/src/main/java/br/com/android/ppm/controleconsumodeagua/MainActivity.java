@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +28,16 @@ public class MainActivity extends AppCompatActivity {
     private ConsumoDAO dadosConsumoDAO;
     private List<String> listaPaletesLidas;
     private ListView listviewConsumo;
+    private EditText edtMedia;
+    private Double mediaConsumo =0.00;
+    private Double somaConsumo = 0.00;
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = findViewById(R.id.fab);
-        listviewConsumo = (ListView) findViewById(R.id.idLancamentoConsumo);
-        dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +45,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        listviewConsumo = (ListView) findViewById(R.id.idLancamentoConsumo);
+        edtMedia = (EditText) findViewById(R.id.idMediaConsumo);
+        dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
+
     }
+
     public void goCadastroConsumo(){
         Intent intent = new Intent(this, CadastroConsumoActivity.class);
         startActivity(intent);
@@ -58,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Consumo> listaPaletesASeremExibidos = new ArrayList<>();
         List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
         this.listaPaletesLidas = new ArrayList<>();
+
+
         if(listaPaletesPersistidos.size() > 0) {
             for (ConsumoEntity paletePersistido : listaPaletesPersistidos) {
                 Consumo paleteASerExibido = new Consumo();
@@ -67,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 listaPaletesLidas.add(paletePersistido.getDataConsumo());
                 paleteASerExibido.setQtd(paletePersistido.getQtd());
                 paleteASerExibido.setData(String.valueOf(paletePersistido.getDataConsumo()));
+                somaConsumo += paletePersistido.getQtd();
+
             }
             ListaConsumoAdapter listaPaleteRecAdapter = new ListaConsumoAdapter(this, listaPaletesASeremExibidos);
             listviewConsumo.setAdapter(listaPaleteRecAdapter);
@@ -74,5 +85,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             listviewConsumo.setVisibility(View.GONE);
         }
+        mediaConsumo = (double) somaConsumo/30;
+        edtMedia.setText(String.valueOf(df2.format(mediaConsumo)));
+
     }
 }

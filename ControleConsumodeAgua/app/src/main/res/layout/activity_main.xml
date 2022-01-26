@@ -1,49 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#2CA7E0"
-    tools:context=".MainActivity">
-
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <ScrollView
+        android:layout_height="match_parent"
+        android:background="#2CA7E0"
+        tools:context=".MainActivity">
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:fillViewport="true"
-            android:scrollbars="vertical"
-            tools:ignore="InefficientWeight">
+            android:orientation="vertical"
+            android:padding="4dp"
+            >
 
-            <ListView
-                android:id="@+id/idLancamentoConsumo"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:ignore="NestedScrolling" />
-        </ScrollView>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        >
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="end|bottom"
-            android:layout_marginStart="178dp"
-            android:layout_marginTop="146dp"
-            android:layout_marginEnd="177dp"
-            android:layout_marginBottom="29dp"
-            android:contentDescription="Enviar"
-            android:src="@android:drawable/ic_input_add" />
-    </RelativeLayout>
-</RelativeLayout>
+                android:gravity="center_horizontal">
+
+                <!--                Tipo Padrão-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/white"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/idMediaConsumo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:background="@drawable/edit"
+                        android:textColor="@color/white"
+                        android:textAlignment="center"
+                        android:textSize="18dp"
+                        android:hint="Média"
+                        tools:ignore="HardcodedText,RtlHardcoded" />
+                </com.google.android.material.textfield.TextInputLayout>
+               </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fillViewport="true"
+                android:scrollbars="vertical"
+                tools:ignore="InefficientWeight">
+
+                <ListView
+                    android:id="@+id/idLancamentoConsumo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    tools:ignore="NestedScrolling" />
+
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Enviar"
+                    android:src="@android:drawable/ic_input_add"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
