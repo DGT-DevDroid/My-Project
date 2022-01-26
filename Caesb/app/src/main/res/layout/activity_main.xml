@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="4dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <!--                Tipo Padrão-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/qtdPaletesId"
+                    android:layout_width="208dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:layout_marginRight="4dp"
+                    android:focusable="false"
+                    android:hint="Data: "
+                    tools:ignore="HardcodedText,RtlHardcoded" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/totalPesoPaletesLidosId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:focusable="false"
+                    android:hint="Qtd m³: "
+                    tools:ignore="HardcodedText,RtlHardcoded" />
+            </com.google.android.material.textfield.TextInputLayout>                </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <EditText
+                android:id="@+id/editTextTextPersonName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+
+                android:text="Name" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lançamentos:"
+            style="?attr/textAppearanceBody1"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:fillViewport="true"
+            android:scrollbars="vertical"
+            tools:ignore="InefficientWeight">
+
+            <ListView
+                android:id="@+id/idLista"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="NestedScrolling" />
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFechar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fechar"
+                android:layout_margin="4dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>t>
