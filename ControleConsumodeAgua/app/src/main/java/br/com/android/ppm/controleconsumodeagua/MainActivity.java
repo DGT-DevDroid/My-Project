@@ -63,14 +63,10 @@ public class MainActivity extends AppCompatActivity {
                 Consumo paleteASerExibido = new Consumo();
                 paleteASerExibido.setQtd(paletePersistido.getQtd());
                 listaPaletesASeremExibidos.add(paleteASerExibido);
-                //ultimoObjetoLido = paletePersistido.getNumeroPalete();
                 listaPaletesLidas.add(String.valueOf(paletePersistido.getQtd()));
                 listaPaletesLidas.add(paletePersistido.getDataConsumo());
-                //listaPesoLidos.add(paletePersistido.getPesoPalete());
                 paleteASerExibido.setQtd(paletePersistido.getQtd());
                 paleteASerExibido.setData(String.valueOf(paletePersistido.getDataConsumo()));
-                //pesoUltimoObjetoLido = BigDecimal.valueOf(paletePersistido.getPesoPalete());
-                //totalPesoPaletesLidos += pesoUltimoObjetoLido.doubleValue();
             }
             ListaConsumoAdapter listaPaleteRecAdapter = new ListaConsumoAdapter(this, listaPaletesASeremExibidos);
             listviewConsumo.setAdapter(listaPaleteRecAdapter);
