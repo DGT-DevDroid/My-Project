@@ -1,11 +1,13 @@
 package br.com.android.ppm.controleconsumodeagua;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     private Double somaConsumo = 0.00;
     private static DecimalFormat df2 = new DecimalFormat("#.##");
     private Context context;
+    private Double maiorValor;
+    private Double menorValor;
+    private int maiorData;
+    private int menorData;
+    private int numDias;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,13 +105,20 @@ public class MainActivity extends AppCompatActivity {
         refreshInformacoes();
         super.onResume();
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void refreshInformacoes(){
 
         ArrayList<Consumo> listaPaletesASeremExibidos = new ArrayList<>();
         List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
         this.listaPaletesLidas = new ArrayList<>();
-
-
+        somaConsumo = dadosConsumoDAO.maior() - dadosConsumoDAO.menor();
+        menorData = dadosConsumoDAO.menorData();
+        maiorData = dadosConsumoDAO.maiorData();
+        //numDias = dadosConsumoDAO.maiorData();
+int i;
+        for(i = menorData; i < maiorData; i++){
+            numDias++;
+        }
         if(listaPaletesPersistidos.size() > 0) {
             for (ConsumoEntity paletePersistido : listaPaletesPersistidos) {
                 Consumo paleteASerExibido = new Consumo();
@@ -113,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 //                listaPaletesLidas.add(paletePersistido.getDataConsumo());
 //                paleteASerExibido.setQtd(paletePersistido.getQtd());
 //                paleteASerExibido.setData(String.valueOf(paletePersistido.getDataConsumo()));
-                somaConsumo += paletePersistido.getQtd();
+               // somaConsumo = dadosConsumoDAO.maiorQtd()-paletePersistido.getQtd();
 
             }
             ListaConsumoAdapter listaPaleteRecAdapter = new ListaConsumoAdapter(this, listaPaletesASeremExibidos);
@@ -122,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             listviewConsumo.setVisibility(View.GONE);
         }
-        mediaConsumo = (double) somaConsumo/30;
+
+        mediaConsumo = ((double) somaConsumo/numDias) *30;
         edtMedia.setText(String.valueOf(df2.format(mediaConsumo)));
 
     }
