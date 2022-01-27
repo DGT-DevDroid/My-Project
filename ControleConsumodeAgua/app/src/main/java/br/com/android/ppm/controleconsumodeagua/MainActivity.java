@@ -46,11 +46,17 @@ public class MainActivity extends AppCompatActivity {
     private int maiorData;
     private int menorData;
     private int numDias;
-
+    int i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        listviewConsumo = (ListView) findViewById(R.id.idLancamentoConsumo);
+        edtMedia = (EditText) findViewById(R.id.idMediaConsumo);
+        dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
+        List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
+        refreshInformacoes(listaPaletesPersistidos);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        listviewConsumo = (ListView) findViewById(R.id.idLancamentoConsumo);
-        edtMedia = (EditText) findViewById(R.id.idMediaConsumo);
-        dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
 
 //        listviewConsumo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
     }
-//    public void excluirConsumo(int idConsumo){
+    //    public void excluirConsumo(int idConsumo){
 //        dadosConsumoDAO.delete(idConsumo);
 //        refreshInformacoes();
 //    }
@@ -102,23 +105,16 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onResume() {
-        refreshInformacoes();
         super.onResume();
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void refreshInformacoes(){
+
+    private void refreshInformacoes(List<ConsumoEntity> listaPaletesPersistidos){
 
         ArrayList<Consumo> listaPaletesASeremExibidos = new ArrayList<>();
-        List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
+
         this.listaPaletesLidas = new ArrayList<>();
-        somaConsumo = dadosConsumoDAO.maior() - dadosConsumoDAO.menor();
-        menorData = dadosConsumoDAO.menorData();
-        maiorData = dadosConsumoDAO.maiorData();
-        //numDias = dadosConsumoDAO.maiorData();
-int i;
-        for(i = menorData; i < maiorData; i++){
-            numDias++;
-        }
+
+
         if(listaPaletesPersistidos.size() > 0) {
             for (ConsumoEntity paletePersistido : listaPaletesPersistidos) {
                 Consumo paleteASerExibido = new Consumo();
@@ -129,12 +125,20 @@ int i;
 //                listaPaletesLidas.add(paletePersistido.getDataConsumo());
 //                paleteASerExibido.setQtd(paletePersistido.getQtd());
 //                paleteASerExibido.setData(String.valueOf(paletePersistido.getDataConsumo()));
-               // somaConsumo = dadosConsumoDAO.maiorQtd()-paletePersistido.getQtd();
+                // somaConsumo = dadosConsumoDAO.maiorQtd()-paletePersistido.getQtd();
 
             }
             ListaConsumoAdapter listaPaleteRecAdapter = new ListaConsumoAdapter(this, listaPaletesASeremExibidos);
             listviewConsumo.setAdapter(listaPaleteRecAdapter);
             listviewConsumo.setVisibility(View.VISIBLE);
+            somaConsumo = dadosConsumoDAO.maior() - dadosConsumoDAO.menor();
+            menorData = dadosConsumoDAO.menorData();
+            maiorData = dadosConsumoDAO.maiorData();
+            //numDias = dadosConsumoDAO.maiorData();
+
+            for(i = menorData; i < maiorData; i++){
+                numDias++;
+            }
         }else{
             listviewConsumo.setVisibility(View.GONE);
         }
