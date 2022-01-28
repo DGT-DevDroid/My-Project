@@ -14,7 +14,7 @@
             android:padding="4dp"
             >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
@@ -31,31 +31,54 @@
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/idConsumoDiario"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:background="@drawable/edit"
+                        android:textColor="@color/white"
+                        android:textAlignment="center"
+                        android:hint="Média do Dia:"
+                        android:textSize="30dp"
+                        android:textStyle="bold"
+                     />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColorHint="@color/white"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/idMediaConsumo"
-                        android:layout_width="100dp"
+                        android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:background="@drawable/edit"
                         android:textColor="@color/white"
                         android:textAlignment="center"
                         android:textSize="30dp"
+                        android:hint="Média Prevista do Mês:"
                         android:textStyle="bold"
 
                         tools:ignore="HardcodedText,RtlHardcoded" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-
-            </RelativeLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Média"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:layout_marginBottom="4dp"
-                tools:ignore="HardcodedText" />
+            </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Média"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="20dp"-->
+<!--                android:gravity="center"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:layout_marginBottom="4dp"-->
+<!--                tools:ignore="HardcodedText" />-->
 
             <ScrollView
                 android:layout_width="match_parent"

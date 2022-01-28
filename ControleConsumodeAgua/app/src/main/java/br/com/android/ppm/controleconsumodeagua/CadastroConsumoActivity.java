@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -45,9 +46,9 @@ public class CadastroConsumoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 gravaDadosConsumo(Double.parseDouble(txtqtd.getText().toString()), txtdata.getText().toString());
-                //gravaDadosConsumo(10.52, "01/02/2022");
-                limpaCamposCadastro(txtqtd, txtdata);
+                //limpaCamposCadastro(txtqtd, txtdata);
                 Toast.makeText(CadastroConsumoActivity.this, getString(R.string.cadastro_com_sucesso), Toast.LENGTH_SHORT).show();
+                goMainActivity();
             }
         });
 
@@ -78,13 +79,18 @@ public class CadastroConsumoActivity extends AppCompatActivity {
     private void gravaDadosConsumo(Double qtd, String data) {
         //SimpleDateFormat fmtData = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         ConsumoEntity dadosConsumo = new ConsumoEntity();
-        int id =  +listaConsumoDAO.lista().size();
-        dadosConsumo.setIdConsumo(id);
+        //int id =  +listaConsumoDAO.lista().size();
+
         dadosConsumo.setQtd(qtd);
         dadosConsumo.setDataConsumo(data.toString());
+        int id = listaConsumoDAO.ultimoId() + 1;
+        dadosConsumo.setIdConsumo(id);
         listaConsumoDAO.adiciona(dadosConsumo);
     }
-
+    public void goMainActivity(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 
     private void updateLabel() {
 

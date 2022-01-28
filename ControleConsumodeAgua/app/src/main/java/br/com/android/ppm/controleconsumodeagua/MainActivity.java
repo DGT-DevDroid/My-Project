@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private List<String> listaPaletesLidas;
     private ListView listviewConsumo;
     private EditText edtMedia;
+    private EditText edtMediaDiaria;
     private Double mediaConsumo =0.00;
+    private Double mediaConsumoDiario = 0.00;
     private Double somaConsumo = 0.00;
     private static DecimalFormat df2 = new DecimalFormat("#.##");
     private Context context;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         listviewConsumo = (ListView) findViewById(R.id.idLancamentoConsumo);
         edtMedia = (EditText) findViewById(R.id.idMediaConsumo);
+        edtMediaDiaria = (EditText) findViewById(R.id.idConsumoDiario);
         dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
         List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
         refreshInformacoes(listaPaletesPersistidos);
@@ -64,41 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 goCadastroConsumo();
             }
         });
-
-
-//        listviewConsumo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                final Consumo paleteASerExcluido = (Consumo) listviewConsumo.getAdapter().getItem(position);
-//
-//                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                builder.setMessage("Você selecionou a exclusão do palete " + paleteASerExcluido.getId() + ". \n Deseja prosseguir?")
-//                        .setTitle("Atenção!!!")
-//                        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
-//                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialogInterface, @SuppressWarnings("unused") final int id) {
-//
-//                                    excluirConsumo(paleteASerExcluido.getId());
-//
-//                               //     excluirPalete(paleteASerExcluido.getNumPalete());
-//
-//                                dialogInterface.dismiss();
-//                            }
-//                        })
-//                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                                dialogInterface.dismiss();
-//                            }
-//                        }).show();
-//            }
-//        });
-
     }
-    //    public void excluirConsumo(int idConsumo){
-//        dadosConsumoDAO.delete(idConsumo);
-//        refreshInformacoes();
-//    }
+
     public void goCadastroConsumo(){
         Intent intent = new Intent(this, CadastroConsumoActivity.class);
         startActivity(intent);
@@ -108,28 +78,26 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
     private void refreshInformacoes(List<ConsumoEntity> listaPaletesPersistidos){
 
-        ArrayList<Consumo> listaPaletesASeremExibidos = new ArrayList<>();
+        ArrayList<Consumo> listaConsumoASeremExibidos = new ArrayList<>();
 
         this.listaPaletesLidas = new ArrayList<>();
 
 
         if(listaPaletesPersistidos.size() > 0) {
-            for (ConsumoEntity paletePersistido : listaPaletesPersistidos) {
-                Consumo paleteASerExibido = new Consumo();
-                paleteASerExibido.setQtd(paletePersistido.getQtd());
-                paleteASerExibido.setData(paletePersistido.getDataConsumo());
-                listaPaletesASeremExibidos.add(paleteASerExibido);
-//                listaPaletesLidas.add(String.valueOf(paletePersistido.getQtd()));
-//                listaPaletesLidas.add(paletePersistido.getDataConsumo());
-//                paleteASerExibido.setQtd(paletePersistido.getQtd());
-//                paleteASerExibido.setData(String.valueOf(paletePersistido.getDataConsumo()));
-                // somaConsumo = dadosConsumoDAO.maiorQtd()-paletePersistido.getQtd();
-
+            for (ConsumoEntity listaConsumo : listaPaletesPersistidos) {
+                Consumo consumoASerExibido = new Consumo();
+                consumoASerExibido.setQtd(listaConsumo.getQtd());
+                consumoASerExibido.setData(listaConsumo.getDataConsumo());
+                listaConsumoASeremExibidos.add(consumoASerExibido);
             }
-            ListaConsumoAdapter listaPaleteRecAdapter = new ListaConsumoAdapter(this, listaPaletesASeremExibidos);
-            listviewConsumo.setAdapter(listaPaleteRecAdapter);
+            ListaConsumoAdapter listaAdapter = new ListaConsumoAdapter(this, listaConsumoASeremExibidos);
+            listviewConsumo.setAdapter(listaAdapter);
             listviewConsumo.setVisibility(View.VISIBLE);
             somaConsumo = dadosConsumoDAO.maior() - dadosConsumoDAO.menor();
             menorData = dadosConsumoDAO.menorData();
@@ -142,9 +110,27 @@ public class MainActivity extends AppCompatActivity {
         }else{
             listviewConsumo.setVisibility(View.GONE);
         }
-
+//        getTop2();
         mediaConsumo = ((double) somaConsumo/numDias) *30;
+        mediaConsumoDiario = dadosConsumoDAO.maior() - getTop2();
         edtMedia.setText(String.valueOf(df2.format(mediaConsumo)));
-
+        edtMediaDiaria.setText(String.valueOf(df2.format(mediaConsumoDiario)));
     }
+
+
+    public Double getTop2(){
+
+        List<ConsumoEntity> lista;
+        lista = (ArrayList<ConsumoEntity>) dadosConsumoDAO.top2();
+        Double maior=0.00, menor=0.00;
+        for (ConsumoEntity l : lista){
+           menor = l.getQtd();
+        }
+
+
+        return menor;
+    }
+
+
+
 }

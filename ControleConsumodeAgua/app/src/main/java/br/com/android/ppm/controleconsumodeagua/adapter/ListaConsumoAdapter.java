@@ -56,8 +56,8 @@ public class ListaConsumoAdapter extends BaseAdapter {
         return 0;
     }
 
-    private void excluir(int idConsumo){
-        consumoDAO.delete(idConsumo);
+    private void excluir(String data){
+        consumoDAO.delete(data);
         context.startActivity(new Intent(context.getApplicationContext(), MainActivity.class));
 
     }
@@ -94,7 +94,7 @@ public class ListaConsumoAdapter extends BaseAdapter {
                         .setMessage("Deseja excluir o registro ")
                         .setNeutralButton(R.string.label_cancelar,(dialogInterface, i) -> {})
                         .setPositiveButton("Sim", (dialogInterface, i) -> {
-                            excluir(listaConsumo.get(position).getId());
+                            excluir(listaConsumo.get(position).getData());
                             dialogInterface.dismiss();
                         })
                         .show();
@@ -111,11 +111,11 @@ public class ListaConsumoAdapter extends BaseAdapter {
 
     }
 
-    public ArrayList<Consumo> getListaPaletesLidos() {
+    public ArrayList<Consumo> getListaConsumo() {
         return listaConsumo;
     }
 
-    public void setListaPaletesLidos(ArrayList<Consumo> listaConsumo) {
+    public void getListaConsumo(ArrayList<Consumo> listaConsumo) {
         this.listaConsumo = listaConsumo;
     }
 
