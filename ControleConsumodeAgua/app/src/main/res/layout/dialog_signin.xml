@@ -40,7 +40,7 @@
             android:hint="Data"
             android:textColorHint="@color/black"
             android:layout_gravity="center"
-            android:background="#9CDAD3"
+            android:background="#B4ECE5"
             android:padding="20dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -56,7 +56,7 @@
             android:id="@+id/editQtdUltimaLeitura"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#9CDAD3"
+            android:background="#B4ECE5"
             android:hint="Qtd m³"
             android:inputType="numberDecimal"
             android:maxLength="13"
