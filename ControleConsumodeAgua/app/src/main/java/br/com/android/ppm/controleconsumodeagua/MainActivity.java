@@ -1,28 +1,22 @@
 package br.com.android.ppm.controleconsumodeagua;
 
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private ConsumoDAO dadosConsumoDAO;
     private List<String> listaPaletesLidas;
     private ListView listviewConsumo;
-    private EditText edtMedia;
-    private EditText edtMediaDiaria;
+    private EditText edtMedia, edtMediaDiaria, edtLeituraAnterior, edtMeta;
     private Double mediaConsumo =0.00;
     private Double mediaConsumoDiario = 0.00;
+    private Double leituraAnteior = 0.00;
+    private Double meta = 0.00;
+    private SharedPreferences preferences;
     private Double somaConsumo = 0.00;
     private static DecimalFormat df2 = new DecimalFormat("#.##");
+    private static DecimalFormat df = new DecimalFormat("0");
     private Context context;
     private Double maiorValor;
     private Double menorValor;
@@ -53,21 +50,42 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         listviewConsumo = (ListView) findViewById(R.id.idLancamentoConsumo);
         edtMedia = (EditText) findViewById(R.id.idMediaConsumo);
+        edtLeituraAnterior = (EditText) findViewById(R.id.idLeituraAnterior);
+        edtMeta = (EditText) findViewById(R.id.idMeta);
         edtMediaDiaria = (EditText) findViewById(R.id.idConsumoDiario);
         dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
         List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
         refreshInformacoes(listaPaletesPersistidos);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goCadastroConsumo();
-            }
-        });
+        fab.setOnClickListener(view -> goCadastroConsumo());
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                //addSomething();
+                abreJanelaDeCadastro();
+                return true;
+            case R.id.action_settings:
+                //startSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 
     public void goCadastroConsumo(){
         Intent intent = new Intent(this, CadastroConsumoActivity.class);
@@ -82,13 +100,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
     }
+
     private void refreshInformacoes(List<ConsumoEntity> listaPaletesPersistidos){
-
+        SharedPreferences preferences = getSharedPreferences("UltimaLeitura", MODE_PRIVATE);
+        String qtd = preferences.getString("Qtd", "");
         ArrayList<Consumo> listaConsumoASeremExibidos = new ArrayList<>();
-
         this.listaPaletesLidas = new ArrayList<>();
-
-
         if(listaPaletesPersistidos.size() > 0) {
             for (ConsumoEntity listaConsumo : listaPaletesPersistidos) {
                 Consumo consumoASerExibido = new Consumo();
@@ -107,30 +124,66 @@ public class MainActivity extends AppCompatActivity {
             for(i = menorData; i < maiorData; i++){
                 numDias++;
             }
+            mediaConsumo = ((double) somaConsumo/numDias) *30;
+            mediaConsumoDiario = dadosConsumoDAO.maior() - getTop2();
+
+
         }else{
             listviewConsumo.setVisibility(View.GONE);
         }
-//        getTop2();
-        mediaConsumo = ((double) somaConsumo/numDias) *30;
-        mediaConsumoDiario = dadosConsumoDAO.maior() - getTop2();
+        meta = (Double.parseDouble(qtd) + 14.00)-0.499;
         edtMedia.setText(String.valueOf(df2.format(mediaConsumo)));
         edtMediaDiaria.setText(String.valueOf(df2.format(mediaConsumoDiario)));
+        edtLeituraAnterior.setText(qtd);
+        edtMeta.setText(String.valueOf(df.format(meta)));
+
     }
 
-
     public Double getTop2(){
-
         List<ConsumoEntity> lista;
         lista = (ArrayList<ConsumoEntity>) dadosConsumoDAO.top2();
         Double maior=0.00, menor=0.00;
         for (ConsumoEntity l : lista){
            menor = l.getQtd();
         }
-
-
         return menor;
     }
+    public void abreJanelaDeCadastro(){
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View viewDialog = layoutInflater.inflate(R.layout.dialog_signin, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(viewDialog);
+
+        TextView tvAdicionar = viewDialog.findViewById(R.id.tvAdicionar);
+        TextView tvFechar = viewDialog.findViewById(R.id.tvFechar);
+
+        final EditText editQtdUltimaLeitura = viewDialog.findViewById(R.id.editQtdUltimaLeitura);
+        final EditText editDataUltimaLeitura = viewDialog.findViewById(R.id.editDataUltimaLeitura);
+
+        //editQtdUltimaLeitura.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(9)});
+
+        AlertDialog dialog = alertDialogBuilder.create();
+
+        dialog.setCancelable(false);
+
+        tvAdicionar.setOnClickListener(v -> {
+            salvarUltimaLeitura(editQtdUltimaLeitura.getText().toString(), editDataUltimaLeitura.getText().toString());
+            dialog.dismiss();
+        });
 
 
+        tvFechar.setOnClickListener(v -> {
+            dialog.dismiss();
+            //refreshInformacoes();
+        });
 
+        dialog.show();
+    }
+    private void salvarUltimaLeitura(String editQtdUltimaLeitura, String editDataUltimaLeitura) {
+        preferences = getSharedPreferences("UltimaLeitura", MODE_PRIVATE);
+        SharedPreferences.Editor dados = preferences.edit();
+        dados.putString("Qtd", String.valueOf(editQtdUltimaLeitura));
+        dados.putString("Data", String.valueOf(editDataUltimaLeitura));
+        dados.apply();
+    }
 }
