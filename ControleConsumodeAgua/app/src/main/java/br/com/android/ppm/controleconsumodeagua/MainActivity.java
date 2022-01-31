@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private int maiorData;
     private int menorData;
     private int numDias;
+    private String qtd ="0.00";
     int i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
     private void refreshInformacoes(List<ConsumoEntity> listaPaletesPersistidos){
         SharedPreferences preferences = getSharedPreferences("UltimaLeitura", MODE_PRIVATE);
         String qtd = preferences.getString("Qtd", "");
+        if (qtd == ""){
+            qtd = "0.00";
+        }
         ArrayList<Consumo> listaConsumoASeremExibidos = new ArrayList<>();
         this.listaPaletesLidas = new ArrayList<>();
         if(listaPaletesPersistidos.size() > 0) {

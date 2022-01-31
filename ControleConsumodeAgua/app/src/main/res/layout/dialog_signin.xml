@@ -18,7 +18,7 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:padding="5dp"
-        android:text="Leitura do Hidrômetro em m³"
+        android:text="Leitura do Hidrômetro"
         style="?attr/textAppearanceHeadline6"
         android:textStyle="bold"
         tools:ignore="HardcodedText" />
