@@ -7,8 +7,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#AD048C9E"
-    android:padding="10dp">
-
+    >
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:src="@mipmap/ic_agua"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,8 +33,10 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/iTextDataUltimaLeitura"
         android:layout_width="match_parent"
+        android:background="@drawable/imput"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
+        android:layout_margin="10dp"
+
         >
 
         <EditText
@@ -35,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="date"
+
             android:textColor="@color/black"
             android:hint="Data"
             android:textColorHint="@color/black"
@@ -47,7 +57,7 @@
         android:id="@+id/iTextqtdUltimaLeitura"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
+        android:padding="10dp"
         >
 
         <EditText
