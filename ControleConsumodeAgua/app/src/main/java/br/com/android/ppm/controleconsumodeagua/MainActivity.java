@@ -73,13 +73,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_add:
+            case R.id.action_settings:
                 //addSomething();
                 abreJanelaDeCadastro();
                 return true;
-            case R.id.action_settings:
-                //startSettings();
-                return true;
+//            case R.id.action_settings:
+//                //startSettings();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

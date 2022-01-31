@@ -39,7 +39,7 @@
                     android:background="@drawable/edit"
                     android:textColor="@color/white"
                     android:textAlignment="center"
-                    android:hint="Consumo do Dia:"
+                    android:hint=" CONSUMO DO DIA "
                     android:textSize="30dp"
                     android:textStyle="bold"
                     />
@@ -63,7 +63,7 @@
                     android:textColor="@color/white"
                     android:textAlignment="center"
                     android:textSize="30dp"
-                    android:hint="Média Prevista do Mês:"
+                    android:hint=" MÉDIA PREVISTA DO MÊS "
                     android:textStyle="bold"
 
                     tools:ignore="HardcodedText,RtlHardcoded" />
@@ -96,7 +96,7 @@
                     android:background="@drawable/edit"
                     android:textColor="@color/white"
                     android:textAlignment="center"
-                    android:hint="Leitura Anterior:"
+                    android:hint=" LEITURA ANTERIOR "
                     android:textSize="30dp"
                     android:textStyle="bold"
                     />
@@ -120,7 +120,7 @@
                     android:textColor="@color/white"
                     android:textAlignment="center"
                     android:textSize="30dp"
-                    android:hint="Meta de Consumo:"
+                    android:hint=" META DE CONSUMO "
                     android:textStyle="bold"
                     tools:ignore="HardcodedText,RtlHardcoded" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,6 +158,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_margin="20dp"
             android:gravity="center_horizontal">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -166,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="Enviar"
                 android:src="@android:drawable/ic_input_add"
-                />
+            />
         </LinearLayout>
 
     </LinearLayout>

@@ -85,9 +85,8 @@
                 android:layout_height="wrap_content"
                 android:text="Adicionar"
                 style="?attr/materialButtonOutlinedStyle"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textColor="@color/white"
-
                 tools:ignore="HardcodedText" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/tvFechar"
@@ -96,7 +95,7 @@
                 android:text="fechar"
                 android:textColor="@color/white"
                 style="?attr/materialButtonOutlinedStyle"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 tools:ignore="HardcodedText" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 

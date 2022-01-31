@@ -15,7 +15,7 @@ public interface ConsumoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long adiciona(ConsumoEntity consumoEntity);
 
-    @Query("SELECT * FROM ConsumoEntity ORDER BY data_consumo")
+    @Query("SELECT * FROM ConsumoEntity ORDER BY data_consumo DESC")
     List<ConsumoEntity> lista();
 
     @Query("SELECT Max(qtd) FROM ConsumoEntity")
