@@ -2,6 +2,7 @@ package br.com.android.ppm.controleconsumodeagua.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import br.com.android.ppm.controleconsumodeagua.MainActivity;
@@ -64,6 +69,7 @@ public class ListaConsumoAdapter extends BaseAdapter {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -84,9 +90,11 @@ public class ListaConsumoAdapter extends BaseAdapter {
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate data1 = LocalDate.parse(listaConsumo.get(position).getData());
+        String hojeFormatado = data1.format(formato);
         holder.idQdtConsumo.setText(String.valueOf(df2.format(listaConsumo.get(position).getQtd())));
-        holder.idData.setText(listaConsumo.get(position).getData());
+        holder.idData.setText(hojeFormatado.toString());
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

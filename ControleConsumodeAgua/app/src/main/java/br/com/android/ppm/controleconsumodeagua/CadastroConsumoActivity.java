@@ -2,12 +2,14 @@ package br.com.android.ppm.controleconsumodeagua;
 
 import static java.lang.Integer.parseInt;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -76,13 +80,15 @@ public class CadastroConsumoActivity extends AppCompatActivity {
         txtdata.setText(null);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void gravaDadosConsumo(Double qtd, String data) {
         //SimpleDateFormat fmtData = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         ConsumoEntity dadosConsumo = new ConsumoEntity();
         //int id =  +listaConsumoDAO.lista().size();
-
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate data1 = LocalDate.parse(data, formato);
         dadosConsumo.setQtd(qtd);
-        dadosConsumo.setDataConsumo(data.toString());
+        dadosConsumo.setDataConsumo(data1.toString());
         int id = listaConsumoDAO.ultimoId() + 1;
         dadosConsumo.setIdConsumo(id);
         listaConsumoDAO.adiciona(dadosConsumo);

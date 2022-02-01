@@ -25,10 +25,13 @@ public interface ConsumoDAO {
     Double menor();
 
     @Query("SELECT Max(data_consumo) FROM ConsumoEntity")
-    int maiorData();
+    String maiorData();
 
     @Query("SELECT Min(data_consumo) FROM ConsumoEntity")
-    int menorData();
+    String menorData();
+
+    @Query(" SELECT julianday(Max(data_consumo)) - julianday(Min(data_consumo)) FROM ConsumoEntity")
+    int numDias();
 
     @Query("SELECT *FROM ConsumoEntity ORDER BY id_consumo DESC LIMIT 1")
     int ultimoId();
@@ -54,4 +57,6 @@ public interface ConsumoDAO {
 
     @Query("DELETE FROM ConsumoEntity")
     void apagaTudo();
+
+
 }

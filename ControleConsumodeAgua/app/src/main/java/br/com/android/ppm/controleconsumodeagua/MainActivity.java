@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ import br.com.android.ppm.controleconsumodeagua.persistence.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private ConsumoDAO dadosConsumoDAO;
-    private List<String> listaPaletesLidas;
+    private List<String> listaPegarDate;
     private ListView listviewConsumo;
     private EditText edtMedia, edtMediaDiaria, edtLeituraAnterior, edtMeta;
     private Double mediaConsumo =0.00;
@@ -42,11 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     private Double maiorValor;
     private Double menorValor;
-    private int maiorData;
-    private int menorData;
+    private Date maiorData;
+    private Date menorData;
     private int numDias;
     private String qtd ="0.00";
-    int i;
+    Date i;
+    private Date data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             qtd = "0.00";
         }
         ArrayList<Consumo> listaConsumoASeremExibidos = new ArrayList<>();
-        this.listaPaletesLidas = new ArrayList<>();
+        //this.listaPaletesLidas = new ArrayList<>();
         if(listaPaletesPersistidos.size() > 0) {
             for (ConsumoEntity listaConsumo : listaPaletesPersistidos) {
                 Consumo consumoASerExibido = new Consumo();
@@ -121,13 +124,16 @@ public class MainActivity extends AppCompatActivity {
             listviewConsumo.setAdapter(listaAdapter);
             listviewConsumo.setVisibility(View.VISIBLE);
             somaConsumo = dadosConsumoDAO.maior() - dadosConsumoDAO.menor();
-            menorData = dadosConsumoDAO.menorData();
-            maiorData = dadosConsumoDAO.maiorData();
+            menorData = Date.valueOf(dadosConsumoDAO.menorData());
+            maiorData = Date.valueOf(dadosConsumoDAO.maiorData());
+
+            numDias = dadosConsumoDAO.numDias();
+           // numDias = Integer.parseInt(String.valueOf(maiorData.toString())) - Integer.parseInt(String.valueOf(menorData.toString()));
             //numDias = dadosConsumoDAO.maiorData();
 
-            for(i = menorData; i < maiorData; i++){
-                numDias++;
-            }
+//            if(menorData > menorData){
+//                numDias++;
+//            }
             mediaConsumo = ((double) somaConsumo/numDias) *30;
             mediaConsumoDiario = dadosConsumoDAO.maior() - getTop2();
 
