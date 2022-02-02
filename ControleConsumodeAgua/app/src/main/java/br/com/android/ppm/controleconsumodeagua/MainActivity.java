@@ -290,19 +290,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }else{
-            //customizaEExibeMensagem("Não há paletes para envio ");
-            Mensagem("Não há paletes para envio");
+            Mensagem("Não há dados para gravar");
         }
     }
 
     public void transmitirDados(){
         //Deleta as informações Palete
         dadosConsumoDAO.apagaTudo();
-
         //Envia mensagem
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-        builder.setMessage("Dados Gravados com Sucesso na pasta Documents/ControdeDeAgua")
+        builder.setMessage("Dados Gravados com Sucesso na pasta Downloads/ControdeDeAgua")
                 .setTitle("Atenção!!!")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialogInterface, @SuppressWarnings("unused") final int id) {
