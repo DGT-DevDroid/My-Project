@@ -1,25 +1,40 @@
 package br.com.android.ppm.controleconsumodeagua;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.com.android.ppm.controleconsumodeagua.adapter.ListaConsumoAdapter;
@@ -29,7 +44,9 @@ import br.com.android.ppm.controleconsumodeagua.modal.Consumo;
 import br.com.android.ppm.controleconsumodeagua.persistence.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 100;
     private ConsumoDAO dadosConsumoDAO;
+    private Button btnGravar;
     private List<String> listaPegarDate;
     private ListView listviewConsumo;
     private EditText edtMedia, edtMediaDiaria, edtLeituraAnterior, edtMeta;
@@ -48,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
     private Date menorData;
     private int numDias;
     private String qtd ="0.00";
+    private static SimpleDateFormat fmData = new SimpleDateFormat("dd/MM/yyyy");
+
     Date i;
+    private String dadosArquivo = "";
     private Date data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +82,18 @@ public class MainActivity extends AppCompatActivity {
         dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
         List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
         refreshInformacoes(listaPaletesPersistidos);
+
+        btnGravar = (Button) findViewById(R.id.btnGravar);
+        btnGravar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gerarArquivo();
+            }
+        });
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> goCadastroConsumo());
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -196,4 +225,116 @@ public class MainActivity extends AppCompatActivity {
         dados.putString("Data", String.valueOf(editDataUltimaLeitura));
         dados.apply();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void gerarArquivo(){
+        //Monta as informações a serem enviadas para o arquivo
+        ArrayList<Consumo> lista = new ArrayList<>();
+        List<ConsumoEntity> listas = dadosConsumoDAO.lista();
+
+        if(listas.size() > 0){
+            String state = Environment.getExternalStorageState();
+
+            for(ConsumoEntity consumo : listas){
+
+                String dataConsumo = consumo.getDataConsumo();
+                Double qtdConsumo = consumo.getQtd();
+
+                dadosArquivo = dadosArquivo + dataConsumo + "  " +qtdConsumo +"m³" + "\r\n";
+
+            }
+
+            LocalDate dataAtual = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
+            String nomeArquivo = "Controle de Agua_" + dataAtual.format(formatter) + ".txt";
+
+
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (checkPermission()) {
+                        File sdcard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        File dir = new File(sdcard.getAbsolutePath() + "/ControdeDeAgua/");
+                        dir.mkdirs();
+                        File file = new File(dir, nomeArquivo);
+                        FileOutputStream os = null;
+                        try {
+                            os = new FileOutputStream(file);
+                            os.write(dadosArquivo.getBytes());
+                            os.close();
+
+                            transmitirDados();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        requestPermission(); // Code for permission
+                    }
+                } else {
+                    File sdcard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    File dir = new File(sdcard.getAbsolutePath() + "/ControdeDeAgua/");
+                    dir.mkdir();
+                    File file = new File(dir, nomeArquivo);
+                    FileOutputStream os = null;
+                    try {
+                        os = new FileOutputStream(file);
+                        os.write(dadosArquivo.getBytes());
+                        os.close();
+
+                        transmitirDados();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }else{
+            //customizaEExibeMensagem("Não há paletes para envio ");
+            Mensagem("Não há paletes para envio");
+        }
+    }
+
+    public void transmitirDados(){
+        //Deleta as informações Palete
+       // dadosConsumoDAO.apagaTudo();
+
+        //Envia mensagem
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setMessage("Dados Gravados com Sucesso na pasta Documents/ControdeDeAgua")
+                .setTitle("Atenção!!!")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialogInterface, @SuppressWarnings("unused") final int id) {
+//                        Intent intent = new Intent(RecebimentoPaleteActivity.this, MenuPrincipalActivity.class);
+//                        startActivity(intent);
+                       // finish();
+                    }
+                });
+        builder.show();
+    }
+
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //customizaEExibeMensagem("Esta aplicação precisa de permissão para uso do drive local. ");
+            Mensagem("Esta aplicação precisa de permissão para uso do drive local.");
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+    }
+    public void Mensagem (String msg){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(msg)
+                .setTitle("Atenção!!!")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialogInterface, @SuppressWarnings("unused") final int id) {
+                    }
+                }).show();
+    }
+
 }
