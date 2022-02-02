@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void transmitirDados(){
         //Deleta as informações Palete
-       // dadosConsumoDAO.apagaTudo();
+        dadosConsumoDAO.apagaTudo();
 
         //Envia mensagem
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
