@@ -126,16 +126,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
-        <!--            <TextView-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="Média"-->
-        <!--                android:textStyle="bold"-->
-        <!--                android:textSize="20dp"-->
-        <!--                android:gravity="center"-->
-        <!--                android:textColor="@color/white"-->
-        <!--                android:layout_marginBottom="4dp"-->
-        <!--                tools:ignore="HardcodedText" />-->
 
         <ScrollView
             android:layout_width="match_parent"
@@ -159,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Enviar"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_gravity="right"
             android:src="@android:drawable/ic_input_add"
