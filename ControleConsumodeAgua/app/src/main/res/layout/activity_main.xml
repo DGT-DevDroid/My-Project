@@ -154,7 +154,16 @@
                 tools:ignore="NestedScrolling" />
 
         </ScrollView>
-
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Enviar"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="right"
+            android:src="@android:drawable/ic_input_add"
+            />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -169,24 +178,11 @@
             android:layout_height="match_parent"
             android:text="Gravar em arquivo">
         </com.google.android.material.button.MaterialButton>
+
         </LinearLayout>
 
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:gravity="end">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Enviar"
-                android:src="@android:drawable/ic_input_add"
-            />
-        </LinearLayout>
 
     </LinearLayout>
 

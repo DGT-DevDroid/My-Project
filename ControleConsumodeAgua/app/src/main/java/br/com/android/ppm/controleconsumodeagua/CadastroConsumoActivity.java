@@ -4,6 +4,8 @@ import static java.lang.Integer.parseInt;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NavUtils;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -11,6 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -23,6 +27,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import br.com.android.ppm.controleconsumodeagua.dao.ConsumoDAO;
 import br.com.android.ppm.controleconsumodeagua.entity.ConsumoEntity;
@@ -40,12 +45,13 @@ public class CadastroConsumoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_consumo);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         idData=(EditText) findViewById(R.id.idData);
         listaConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
         txtqtd       = findViewById(R.id.idConsumo);
         txtdata      = findViewById(R.id.idData);
         btnCadastrar = findViewById(R.id.btnCadastrar);
-
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +80,15 @@ public class CadastroConsumoActivity extends AppCompatActivity {
             }
         });
 
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id==android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
     }
     private void limpaCamposCadastro(TextView txtqtd, TextView txtdata) {
         txtqtd.setText(null);
