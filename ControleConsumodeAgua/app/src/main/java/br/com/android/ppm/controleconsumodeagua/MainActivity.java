@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -80,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         edtMeta = (EditText) findViewById(R.id.idMeta);
         edtMediaDiaria = (EditText) findViewById(R.id.idConsumoDiario);
         dadosConsumoDAO = AppDatabase.getInstance(this).consumoDAO();
-        List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
-        refreshInformacoes(listaPaletesPersistidos);
+
+        refreshInformacoes();
 
         btnGravar = (Button) findViewById(R.id.btnGravar);
         btnGravar.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> goCadastroConsumo());
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,18 +108,15 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_settings:
-                //addSomething();
                 abreJanelaDeCadastro();
                 return true;
-//            case R.id.action_settings:
-//                //startSettings();
-//                return true;
+            case R.id.action_delete:
+                apagarDados();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 
     public void goCadastroConsumo(){
         Intent intent = new Intent(this, CadastroConsumoActivity.class);
@@ -126,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onResume() {
+        refreshInformacoes();
         super.onResume();
     }
 
@@ -134,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    private void refreshInformacoes(List<ConsumoEntity> listaPaletesPersistidos){
+    private void refreshInformacoes(){
+        List<ConsumoEntity> listaPaletesPersistidos = this.dadosConsumoDAO.lista();
         SharedPreferences preferences = getSharedPreferences("UltimaLeitura", MODE_PRIVATE);
         String qtd = preferences.getString("Qtd", "");
         if (qtd == ""){
@@ -155,18 +155,9 @@ public class MainActivity extends AppCompatActivity {
             somaConsumo = dadosConsumoDAO.maior() - dadosConsumoDAO.menor();
             menorData = Date.valueOf(dadosConsumoDAO.menorData());
             maiorData = Date.valueOf(dadosConsumoDAO.maiorData());
-
             numDias = dadosConsumoDAO.numDias();
-           // numDias = Integer.parseInt(String.valueOf(maiorData.toString())) - Integer.parseInt(String.valueOf(menorData.toString()));
-            //numDias = dadosConsumoDAO.maiorData();
-
-//            if(menorData > menorData){
-//                numDias++;
-//            }
             mediaConsumo = ((double) somaConsumo/numDias) *30;
             mediaConsumoDiario = dadosConsumoDAO.maior() - getTop2();
-
-
         }else{
             listviewConsumo.setVisibility(View.GONE);
         }
@@ -210,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
             dialog.dismiss();
         });
 
-
         tvFechar.setOnClickListener(v -> {
             dialog.dismiss();
             //refreshInformacoes();
@@ -234,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(listas.size() > 0){
             String state = Environment.getExternalStorageState();
-
             for(ConsumoEntity consumo : listas){
 
                 String dataConsumo = consumo.getDataConsumo();
@@ -243,12 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 dadosArquivo = dadosArquivo + dataConsumo + "  " +qtdConsumo +"m³" + "\r\n";
 
             }
-
             LocalDate dataAtual = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
             String nomeArquivo = "Controle de Agua_" + dataAtual.format(formatter) + ".txt";
-
-
             if (Environment.MEDIA_MOUNTED.equals(state)) {
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (checkPermission()) {
@@ -288,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
         }else{
             Mensagem("Não há dados para gravar");
         }
@@ -296,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void transmitirDados(){
         //Deleta as informações Palete
-        dadosConsumoDAO.apagaTudo();
+        //dadosConsumoDAO.apagaTudo();
         //Envia mensagem
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -304,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Atenção!!!")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialogInterface, @SuppressWarnings("unused") final int id) {
+                        refreshInformacoes();
 //                        Intent intent = new Intent(RecebimentoPaleteActivity.this, MenuPrincipalActivity.class);
 //                        startActivity(intent);
                        // finish();
@@ -311,7 +297,25 @@ public class MainActivity extends AppCompatActivity {
                 });
         builder.show();
     }
+    public void apagarDados(){
+        new MaterialAlertDialogBuilder(this,
+                R.style.Widget_AppCompat_ActionBar_Solid)
+                .setTitle("Atenção")
+                .setMessage("Deseja excluir os dados?")
+                .setNeutralButton(R.string.label_cancelar,(dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .setPositiveButton("Sim", (dialogInterface, i) -> {
+                    dadosConsumoDAO.apagaTudo();
+                    dialogInterface.dismiss();
+                    mediaConsumoDiario =0.00;
+                    mediaConsumo = 0.00;
+                    refreshInformacoes();
 
+                })
+                .show();
+
+    }
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         return result == PackageManager.PERMISSION_GRANTED;

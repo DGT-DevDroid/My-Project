@@ -96,6 +96,7 @@ public class CadastroConsumoActivity extends AppCompatActivity {
     public void goMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void updateLabel() {

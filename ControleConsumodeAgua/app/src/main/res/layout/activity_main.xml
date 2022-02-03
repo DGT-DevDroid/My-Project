@@ -165,9 +165,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGravar"
-            android:layout_width="150dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:text="Gravar">
+            android:text="Gravar em arquivo">
         </com.google.android.material.button.MaterialButton>
         </LinearLayout>
 

@@ -7,4 +7,9 @@
         app:showAsAction="never"
         android:title="Realizar Leitura">
     </item>
+    <item
+        android:id="@+id/action_delete"
+        app:showAsAction="never"
+        android:title="Apagar Dados">
+    </item>
 </menu>
