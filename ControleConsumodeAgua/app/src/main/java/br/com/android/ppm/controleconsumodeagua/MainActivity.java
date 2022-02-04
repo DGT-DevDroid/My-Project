@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 Consumo consumoASerExibido = new Consumo();
                 consumoASerExibido.setQtd(listaConsumo.getQtd());
                 consumoASerExibido.setData(listaConsumo.getDataConsumo());
+                consumoASerExibido.setQtdConsumoDiario(listaConsumo.getConsumoDiario());
                 listaConsumoASeremExibidos.add(consumoASerExibido);
             }
             ListaConsumoAdapter listaAdapter = new ListaConsumoAdapter(this, listaConsumoASeremExibidos);
@@ -221,15 +222,15 @@ public class MainActivity extends AppCompatActivity {
         //Monta as informações a serem enviadas para o arquivo
         ArrayList<Consumo> lista = new ArrayList<>();
         List<ConsumoEntity> listas = dadosConsumoDAO.lista();
-
+        DecimalFormat df3 = new DecimalFormat("#0.000");
         if(listas.size() > 0){
             String state = Environment.getExternalStorageState();
             for(ConsumoEntity consumo : listas){
 
                 String dataConsumo = consumo.getDataConsumo();
-                Double qtdConsumo = consumo.getQtd();
-
-                dadosArquivo = dadosArquivo + dataConsumo + "  " +qtdConsumo +"m³" + "\r\n";
+                String qtdConsumo =String.valueOf(df3.format(consumo.getQtd()));
+                //String.valueOf(df2.format(mediaConsumo)))
+                dadosArquivo = dadosArquivo + dataConsumo + "  " + qtdConsumo +"m³" + "\r\n";
 
             }
             LocalDate dataAtual = LocalDate.now();

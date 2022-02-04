@@ -30,7 +30,8 @@ public class ListaConsumoAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Consumo> listaConsumo;
     private ConsumoDAO consumoDAO;
-    private static DecimalFormat df2 = new DecimalFormat("##.000");
+    private static DecimalFormat df2 = new DecimalFormat("#0.000");
+    private static DecimalFormat df = new DecimalFormat("0");
 
     public ListaConsumoAdapter(Context context, ArrayList<Consumo> listaConsumo){
         this.context = context;
@@ -83,6 +84,8 @@ public class ListaConsumoAdapter extends BaseAdapter {
 
             holder.idQdtConsumo  = convertView.findViewById(R.id.idQdtConsumo);
             holder.idData = convertView.findViewById(R.id.idData);
+            holder.idConsumoDiario2 = convertView.findViewById(R.id.idConsumoDiario2);
+
             holder.mDelete = convertView.findViewById(R.id.id_delete);
 
             convertView.setTag(holder);
@@ -95,6 +98,8 @@ public class ListaConsumoAdapter extends BaseAdapter {
         String hojeFormatado = data1.format(formato);
         holder.idQdtConsumo.setText(String.valueOf(df2.format(listaConsumo.get(position).getQtd())));
         holder.idData.setText(hojeFormatado.toString());
+        holder.idConsumoDiario2.setText(String.valueOf(df2.format(listaConsumo.get(position).getQtdConsumoDiario())));
+
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +121,7 @@ public class ListaConsumoAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        protected TextView idQdtConsumo, idData;
+        protected TextView idQdtConsumo, idData, idConsumoDiario2;
         ImageView mDelete;
 
     }

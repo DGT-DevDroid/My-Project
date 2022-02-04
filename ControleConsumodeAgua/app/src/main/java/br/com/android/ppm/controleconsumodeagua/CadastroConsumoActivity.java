@@ -25,7 +25,9 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -40,7 +42,8 @@ public class CadastroConsumoActivity extends AppCompatActivity {
     private TextView txtdata;
     private Button btnCadastrar;
     EditText idData;
-
+    private ConsumoDAO dadosConsumoDAO;
+    private Double mediaConsumoDiario = 0.00;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +55,14 @@ public class CadastroConsumoActivity extends AppCompatActivity {
         txtqtd       = findViewById(R.id.idConsumo);
         txtdata      = findViewById(R.id.idData);
         btnCadastrar = findViewById(R.id.btnCadastrar);
+        List<ConsumoEntity> listaConsumo = this.listaConsumoDAO.lista();
+//        if (listaConsumo.size()>0){
+//            mediaConsumoDiario = listaConsumoDAO.maior() - getTop2();
+//        }
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 gravaDadosConsumo(Double.parseDouble(txtqtd.getText().toString()), txtdata.getText().toString());
                 //limpaCamposCadastro(txtqtd, txtdata);
                 Toast.makeText(CadastroConsumoActivity.this, getString(R.string.cadastro_com_sucesso), Toast.LENGTH_SHORT).show();
@@ -94,7 +102,15 @@ public class CadastroConsumoActivity extends AppCompatActivity {
         txtqtd.setText(null);
         txtdata.setText(null);
     }
-
+    public Double getTop2(){
+        List<ConsumoEntity> lista;
+        lista = (ArrayList<ConsumoEntity>) listaConsumoDAO.top2();
+        Double maior=0.00, menor=0.00;
+        for (ConsumoEntity l : lista){
+            menor = l.getQtd();
+        }
+        return menor;
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void gravaDadosConsumo(Double qtd, String data) {
         //SimpleDateFormat fmtData = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -102,8 +118,14 @@ public class CadastroConsumoActivity extends AppCompatActivity {
         //int id =  +listaConsumoDAO.lista().size();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate data1 = LocalDate.parse(data, formato);
+
+        if (listaConsumoDAO.lista().size() >0){
+            mediaConsumoDiario = qtd - listaConsumoDAO.maior();
+        }
+
         dadosConsumo.setQtd(qtd);
         dadosConsumo.setDataConsumo(data1.toString());
+        dadosConsumo.setConsumoDiario(mediaConsumoDiario);
         int id = listaConsumoDAO.ultimoId() + 1;
         dadosConsumo.setIdConsumo(id);
         listaConsumoDAO.adiciona(dadosConsumo);

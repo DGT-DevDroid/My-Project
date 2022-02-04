@@ -15,6 +15,8 @@ public class ConsumoEntity {
     int idConsumo;
     @ColumnInfo(name = "qtd")
     Double qtd;
+    @ColumnInfo(name = "consumo_diario")
+    Double consumoDiario;
     @ColumnInfo(name = "data_consumo")
     String dataConsumo;
 
@@ -42,11 +44,11 @@ public class ConsumoEntity {
         this.dataConsumo = dataConsumo;
     }
 
-//    @Override
-//    public String toString() {
-//        return "ConsumoEntity{" +
-//                "qtd=" + qtd +
-//                ", dataConsumo='" + dataConsumo + '\'' +
-//                '}';
-//    }
+    public Double getConsumoDiario() {
+        return consumoDiario;
+    }
+
+    public void setConsumoDiario(Double consumoDiario) {
+        this.consumoDiario = consumoDiario;
+    }
 }
