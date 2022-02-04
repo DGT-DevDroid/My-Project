@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private Double meta = 0.00;
     private SharedPreferences preferences;
     private Double somaConsumo = 0.00;
+    private static DecimalFormat df3 = new DecimalFormat("#0.000");
     private static DecimalFormat df2 = new DecimalFormat("#.##");
     private static DecimalFormat df = new DecimalFormat("0");
     private Context context;
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         meta = (Double.parseDouble(qtd) + 14.00)-0.499;
         edtMedia.setText(String.valueOf(df2.format(mediaConsumo)));
         edtMediaDiaria.setText(String.valueOf(df2.format(mediaConsumoDiario)));
-        edtLeituraAnterior.setText(qtd);
+        edtLeituraAnterior.setText(String.valueOf(df3.format(Double.parseDouble(qtd))));
         edtMeta.setText(String.valueOf(df.format(meta)));
 
     }
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         //Monta as informações a serem enviadas para o arquivo
         ArrayList<Consumo> lista = new ArrayList<>();
         List<ConsumoEntity> listas = dadosConsumoDAO.lista();
-        DecimalFormat df3 = new DecimalFormat("#0.000");
+
         if(listas.size() > 0){
             String state = Environment.getExternalStorageState();
             for(ConsumoEntity consumo : listas){
@@ -315,8 +316,8 @@ public class MainActivity extends AppCompatActivity {
 
                 })
                 .show();
-
     }
+
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         return result == PackageManager.PERMISSION_GRANTED;
